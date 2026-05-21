@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المكتبة الرقمية لكلية الفنون والتصميم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --blue:#0a3d7a;
+    --blue-dark:#0c2e5c;
+    --green:#198754;
+    --green-dark:#146c43;
+    --bg:#f4f6f9;
+    --white:#ffffff;
+    --text:#2d3748;
+    --text-muted:#718096;
+    --border:#e2e8f0;
+    --shadow:0 4px 15px rgba(0,0,0,0.07);
+  }
+  body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+  /* ===== HEADER ===== */
+  header{
+    background:linear-gradient(135deg,#0a3d7a 0%,#0d5199 100%);
+    color:#fff;padding:1.75rem 2rem 3rem;text-align:center;
+  }
+  header h1{font-size:1.6rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;}
+  header p{font-size:0.95rem;opacity:0.88;}
+
+  /* ===== CONTAINER ===== */
+  .container{max-width:1200px;margin:-1.5rem auto 5rem;padding:0 1.5rem;}
+
+  /* ===== SEARCH BAR ===== */
+  .search-bar{
+    background:var(--white);border-radius:40px;box-shadow:var(--shadow);
+    display:flex;gap:10px;align-items:center;padding:0.6rem 1.25rem;
+    margin-bottom:1.5rem;border:1px solid var(--border);
+  }
+  .search-bar i{color:#a0aec0;font-size:0.95rem;}
+  .search-bar input{border:none;outline:none;background:transparent;font-family:'Cairo',sans-serif;font-size:0.9rem;flex:1;color:var(--text);}
+  .search-bar select{border:none;outline:none;background:transparent;font-family:'Cairo',sans-serif;font-size:0.88rem;color:var(--text-muted);}
+
+  /* ===== STATS ===== */
+  .stats-row{display:flex;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap;}
+  .spill{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-size:0.8rem;color:var(--text-muted);display:flex;align-items:center;gap:6px;}
+  .spill b{color:var(--blue);font-size:1rem;}
+  .btn-sync{background:#dbeafe;color:#1e40af;border:1px solid #bfdbfe;border-radius:20px;padding:6px 16px;font-family:'Cairo',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:0.2s;margin-right:auto;}
+  .btn-sync:hover{background:#bfdbfe;}
+
+  /* ===== UPLOAD ZONE ===== */
+  .upload-zone{
+    background:var(--white);border:2.5px dashed var(--border);border-radius:16px;
+    padding:1.5rem;text-align:center;margin-bottom:1.5rem;cursor:pointer;
+    transition:border-color 0.2s,background 0.2s;
+  }
+  .upload-zone:hover{border-color:var(--blue);background:#f0f6ff;}
+  .upload-zone .uz-icon{font-size:2.2rem;color:var(--blue);margin-bottom:8px;}
+  .upload-zone p{font-size:0.85rem;color:var(--text-muted);}
+  .upload-zone strong{color:var(--blue);font-size:0.95rem;}
+
+  /* ===== CARDS GRID ===== */
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+  .ref-card{background:var(--white);border-radius:14px;border:1px solid var(--border);padding:1.1rem;display:flex;flex-direction:column;gap:8px;}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;}
+  .card-title{font-size:0.95rem;font-weight:700;color:var(--text);line-height:1.45;flex:1;padding-left:6px;}
+  .card-author{font-size:0.78rem;color:var(--text-muted);}
+  
+  .tag{display:inline-block;padding:3px 12px;border-radius:15px;font-size:0.72rem;font-weight:700;}
+  .t-specialized{background:#dbeafe;color:#1e40af;}
+  .t-general{background:#f1f5f9;color:#475569;}
+  .t-research{background:#dcfce7;color:#166534;}
+  .t-projects{background:#fef3c7;color:#92400e;}
+
+  .card-desc{font-size:0.78rem;color:var(--text-muted);line-height:1.6;}
+  .card-actions{display:flex;flex-direction:column;gap:6px;margin-top:auto;}
+  .btn-read,.btn-dl{background:var(--blue);color:#fff;border:none;border-radius:7px;padding:7px;font-family:'Cairo';font-size:0.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+  .btn-dl{background:var(--green);}
+  .btn-del{background:transparent;color:#b91c1c;border:1px solid #fca5a5;border-radius:7px;padding:6px;font-family:'Cairo';font-size:0.78rem;cursor:pointer;}
+  .no-file-badge{background:#fef3c7;color:#92400e;font-size:0.7rem;padding:3px 10px;border-radius:12px;display:inline-flex;align-items:center;gap:4px;}
+
+  /* ===== MODAL ===== */
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:center;justify-content:center;padding:1rem;}
+  .modal-bg.open{display:flex;}
+  .modal{background:var(--white);border-radius:16px;padding:1.5rem;width:100%;max-width:460px;}
+  .modal h2{font-size:1.05rem;font-weight:700;margin-bottom:1.1rem;}
+  .form-group{margin-bottom:0.9rem;}
+  .form-group label{font-size:0.78rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:5px;}
+  .form-group input,.form-group select,.form-group textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-family:'Cairo';font-size:0.85rem;}
+  .drop-area{border:2px dashed var(--border);border-radius:10px;padding:1.1rem;text-align:center;cursor:pointer;margin-bottom:0.9rem;}
+  .drop-area p{font-size:0.82rem;color:var(--text-muted);}
+  .modal-btns{display:flex;gap:10px;margin-top:0.9rem;}
+  .btn-cancel,.btn-save{flex:1;padding:9px;border-radius:8px;font-family:'Cairo';cursor:pointer;}
+  .btn-cancel{border:1px solid var(--border);background:transparent;}
+  .btn-save{background:var(--blue);color:#fff;border:none;font-weight:700;flex:2;}
+
+  /* ===== TOAST ===== */
+  .toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;padding:10px 24px;border-radius:25px;font-family:'Cairo';font-size:0.85rem;font-weight:700;z-index:999;opacity:0;transition:0.3s;pointer-events:none;}
+  .toast.show{opacity:1;}
+  .empty-state{text-align:center;padding:3rem;color:var(--text-muted);grid-column:1/-1;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1><i class="fa-solid fa-building-columns"></i> المكتبة الرقمية الأكاديمية لكلية الفنون والتصميم</h1>
+  <p>تخزين غير محدود للمراجع والبحوث (يعمل Offline)</p>
+</header>
+
+<div class="container">
+  <div class="search-bar">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" id="sInput" placeholder="ابحث عن عنوان، مؤلف..." oninput="doFilter()">
+    <select id="sTag" onchange="doFilter()">
+      <option value="">كل الفئات</option>
+      <option value="specialized">كتب تخصصية</option>
+      <option value="general">كتب عامة</option>
+      <option value="research">أبحاث علمية</option>
+      <option value="projects">مشاريع تخرج</option>
+    </select>
+  </div>
+
+  <div class="stats-row">
+    <div class="spill"><b id="totalCount">0</b> مرجع</div>
+    <div class="spill"><i class="fa-solid fa-hard-drive"></i> تخزين محلي (IndexedDB)</div>
+    <button class="btn-sync" onclick="syncToSheets()"><i class="fa-solid fa-cloud-arrow-up"></i> مزامنة المراجع مع Google Sheets</button>
+  </div>
+
+  <div class="upload-zone" onclick="openModal()">
+    <div class="uz-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+    <p><strong>+ رفع مرجع جديد</strong></p>
+    <p>لا يوجد حد أقصى للحجم - يتم الحفظ في قرص الجهاز</p>
+  </div>
+
+  <div class="cards-grid" id="cardsGrid"></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <h2><i class="fa-solid fa-file-arrow-up"></i> إضافة مرجع جديد</h2>
+    <div class="form-group">
+      <label>عنوان الكتاب أو البحث *</label>
+      <input type="text" id="fTitle" placeholder="أدخل العنوان الكامل...">
+    </div>
+    <div class="form-group">
+      <label>اسم المؤلف *</label>
+      <input type="text" id="fAuthor" placeholder="مثال: أحمد خالد">
+    </div>
+    <div class="form-group">
+      <label>سنة النشر (لنظام APA)</label>
+      <input type="number" id="fYear" placeholder="2024" value="2024">
+    </div>
+    <div class="form-group">
+      <label>التخصص</label>
+      <select id="fTag">
+        <option value="specialized">كتب تخصصية</option>
+        <option value="general">كتب عامة</option>
+        <option value="research">أبحاث علمية</option>
+        <option value="projects">مشاريع تخرج</option>
+      </select>
+    </div>
+    <div class="drop-area" onclick="document.getElementById('fileInput').click()">
+      <i class="fa-solid fa-file-pdf" style="font-size:1.8rem;color:#b91c1c;"></i>
+      <p style="margin-top:6px;">اسحب ملف PDF هنا (حجم غير محدود)</p>
+      <div id="fileChosen" style="color:var(--green);font-weight:bold;margin-top:5px;"></div>
+    </div>
+    <input type="file" id="fileInput" accept=".pdf" style="display:none" onchange="onFileSelect(this)">
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">إلغاء</button>
+      <button class="btn-save" onclick="saveBook()">حفظ في المكتبة</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // رابط Google Apps Script (انظر التعليمات في الأسفل)
+  const GOOGLE_SHEET_MACRO_URL = "https://script.google.com/macros/s/AKfycby2NSTgK_rThJeoLaDDg6HTx2BUOJH62CaKs1NqkFX4teXpBmob-26VhJuN91Le6TYG/exec";
+
+  var books = [];
+  var pendingFileBlob = null;
+  var db;
+  
+  var TAG_LABELS = {specialized:'كتب تخصصية', general:'كتب عامة', research:'أبحاث علمية', projects:'مشاريع تخرج'};
+  var TAG_CSS = {specialized:'t-specialized', general:'t-general', research:'t-research', projects:'t-projects'};
+  var TAG_ICONS = {specialized:'fa-book-open', general:'fa-book', research:'fa-microscope', projects:'fa-graduation-cap'};
+
+  /* ===== IndexedDB SETUP ===== */
+  function initDB() {
+    var req = indexedDB.open("FacultyLibraryDB", 1);
+    req.onupgradeneeded = function(e) {
+      db = e.target.result;
+      if (!db.objectStoreNames.contains("booksStore")) {
+        db.createObjectStore("booksStore", { keyPath: "id" });
+      }
+    };
+    req.onsuccess = function(e) {
+      db = e.target.result;
+      loadBooks();
+    };
+    req.onerror = function() { showToast("خطأ في تهيئة قاعدة البيانات المحلية"); };
+  }
+
+  function loadBooks() {
+    var tx = db.transaction("booksStore", "readonly");
+    var store = tx.objectStore("booksStore");
+    var req = store.getAll();
+    req.onsuccess = function() {
+      books = req.result.sort((a,b) => b.timestamp - a.timestamp);
+      renderCards();
+      updateStats();
+    };
+  }
+
+  /* ===== MODAL ===== */
+  function openModal() {
+    document.getElementById('modalBg').classList.add('open');
+    document.getElementById('fTitle').value = '';
+    document.getElementById('fAuthor').value = '';
+    document.getElementById('fileChosen').textContent = '';
+    document.getElementById('fYear').value = new Date().getFullYear();
+    pendingFileBlob = null;
+  }
+  function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
+  
+  /* ===== FILE SELECT (NO LIMIT) ===== */
+  function onFileSelect(inp) {
+    var f = inp.files[0];
+    if (!f) return;
+    pendingFileBlob = f; // تخزين الملف كـ Blob مباشرة مهما كان حجمه
+    document.getElementById('fileChosen').textContent = '✓ ' + f.name + ' (' + (f.size/1024/1024).toFixed(1) + ' MB)';
+  }
+
+  /* ===== SAVE BOOK ===== */
+  function uid() { return Math.random().toString(36).substr(2, 9); }
+
+  function saveBook() {
+    var title = document.getElementById('fTitle').value.trim();
+    var author = document.getElementById('fAuthor').value.trim();
+    var year = document.getElementById('fYear').value.trim() || new Date().getFullYear();
+    
+    if (!title || !author) { showToast('الرجاء إدخال العنوان والمؤلف'); return; }
+    
+    var b = {
+      id: uid(),
+      title: title,
+      author: author,
+      year: year,
+      tag: document.getElementById('fTag').value,
+      hasFile: !!pendingFileBlob,
+      timestamp: Date.now()
+    };
+    if (pendingFileBlob) b.fileBlob = pendingFileBlob;
+
+    var tx = db.transaction("booksStore", "readwrite");
+    tx.objectStore("booksStore").add(b);
+    tx.oncomplete = function() {
+      closeModal();
+      loadBooks(); // إعادة التحميل لضمان العرض
+      showToast('تم الحفظ في قرص الجهاز بنجاح ✓');
+    };
+  }
+
+  /* ===== DELETE ===== */
+  function deleteBook(id) {
+    if (!confirm('هل أنت متأكد من الحذف النهائي؟')) return;
+    var tx = db.transaction("booksStore", "readwrite");
+    tx.objectStore("booksStore").delete(id);
+    tx.oncomplete = function() {
+      loadBooks();
+      showToast('تم حذف المرجع');
+    };
+  }
+
+  /* ===== PDF ACTIONS ===== */
+  function getBlobAndDo(id, action) {
+    var tx = db.transaction("booksStore", "readonly");
+    var req = tx.objectStore("booksStore").get(id);
+    req.onsuccess = function() {
+      if(!req.result || !req.result.fileBlob) return;
+      var url = URL.createObjectURL(req.result.fileBlob);
+      if (action === 'open') {
+        window.open(url, '_blank');
+      } else {
+        var a = document.createElement('a');
+        a.href = url; a.download = req.result.title + '.pdf'; a.click();
+      }
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+    };
+  }
+
+  /* ===== RENDER ===== */
+  function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+  function renderCards() {
+    var g = document.getElementById('cardsGrid');
+    var q = document.getElementById('sInput').value.trim().toLowerCase();
+    var filterTag = document.getElementById('sTag').value;
+
+    g.innerHTML = '';
+    if (!books.length) {
+      g.innerHTML = '<div class="empty-state">لا توجد مراجع بعد. ابدأ برفع الملفات.</div>';
+      return;
+    }
+
+    books.forEach(function(b) {
+      if (q && !(b.title + b.author).toLowerCase().includes(q)) return;
+      if (filterTag && b.tag !== filterTag) return;
+
+      var fileHTML = b.hasFile
+        ? '<button class="btn-read" onclick="getBlobAndDo(\'' + b.id + '\',\'open\')">قراءة PDF</button>'
+          + '<button class="btn-dl" onclick="getBlobAndDo(\'' + b.id + '\',\'dl\')">تحميل PDF</button>'
+        : '<span class="no-file-badge">بدون ملف PDF</span>';
+
+      // توليد التوثيق APA
+      var apaCitation = esc(b.author) + ". (" + esc(b.year) + "). <i>" + esc(b.title) + "</i>. [" + TAG_LABELS[b.tag] + "].";
+
+      var c = document.createElement('article');
+      c.className = 'ref-card';
+      c.innerHTML =
+        '<div class="card-top">'
+          + '<h3 class="card-title">' + esc(b.title) + '</h3>'
+          + '<i class="fa-solid ' + (TAG_ICONS[b.tag]) + '" style="color:var(--blue);"></i>'
+        + '</div>'
+        + '<div class="card-author"><i class="fa-solid fa-user-pen"></i> ' + esc(b.author) + ' (' + esc(b.year) + ')</div>'
+        + '<div style="margin:5px 0;"><span class="tag ' + TAG_CSS[b.tag] + '">' + TAG_LABELS[b.tag] + '</span></div>'
+        + '<div style="font-size:0.75rem; color:#718096; background:#f4f6f9; padding:5px; border-radius:5px; margin-bottom:8px;" title="توثيق APA"><b>APA:</b> ' + apaCitation + '</div>'
+        + '<div class="card-actions">' + fileHTML + '<button class="btn-del" onclick="deleteBook(\'' + b.id + '\')">حذف</button></div>';
+      g.appendChild(c);
+    });
+  }
+
+  function doFilter() { renderCards(); }
+  function updateStats() { document.getElementById('totalCount').textContent = books.length; }
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  /* ===== SYNC TO GOOGLE SHEETS ===== */
+  function syncToSheets() {
+    if (!navigator.onLine) { showToast('يرجى الاتصال بالإنترنت أولاً'); return; }
+    if (GOOGLE_SHEET_MACRO_URL === "أضف_رابط_سكربت_جوجل_هنا") {
+      alert("الرجاء إضافة رابط Google Apps Script في الكود البرمجي لتفعيل المزامنة.");
+      return;
+    }
+    
+    showToast('جاري تحضير البيانات للمزامنة...');
+    
+    // إرسال البيانات (العنوان، المؤلف، توثيق APA، التخصص)
+    var syncData = books.map(function(b) {
+      return {
+        title: b.title,
+        author: b.author,
+        year: b.year,
+        category: TAG_LABELS[b.tag],
+        apa: b.author + ". (" + b.year + "). " + b.title + ". [" + TAG_LABELS[b.tag] + "]."
+      };
+    });
+
+    fetch(GOOGLE_SHEET_MACRO_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(syncData)
+    }).then(() => {
+      showToast('تمت المزامنة مع Excel / Google Sheets بنجاح!');
+    }).catch((e) => {
+      showToast('حدث خطأ في المزامنة');
+    });
+  }
+
+  /* ===== INIT ===== */
+  initDB();
+</script>
+</body>
+</html>
