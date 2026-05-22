@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>المكتبة الرقمية الأكاديمية - كلية الفنون والتصميم</title>
+    
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#002B5B">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://files.manuscdn.com/user_upload_by_module/session_file/310519663672341033/DPcqnCesIGqshKoH.webp">
+    <link class="apple-touch-icon" href="https://files.manuscdn.com/user_upload_by_module/session_file/310519663672341033/DPcqnCesIGqshKoH.webp">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -105,7 +106,7 @@
         <div class="search-bar mb-6">
             <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
             <input type="text" id="sInput" placeholder="البحث السريع عن المراجع، المؤلفين، أو الطلاب..." class="w-full text-sm" oninput="doFilter()">
-            <select id="sTag" class="text-sm bg-transparent cursor-pointer text-gray-500 font-bold" onchange="doFilter()">
+            <select id="sTag" class="text-sm bg-transparent cursor-pointer text-gray-500" onchange="doFilter()">
                 <option value="">كل التخصصات</option>
                 <option value="specialized">كتب تخصصية</option>
                 <option value="general">كتب عامة</option>
@@ -115,13 +116,8 @@
         </div>
 
         <div class="flex flex-col md:flex-row gap-3 mb-6 items-stretch md:items-center">
-            <div class="flex gap-2 flex-wrap items-center">
+            <div class="flex gap-2 flex-wrap">
                 <div class="spill">إجمالي الرصيد العلمي: <span class="font-bold text-brand-blue px-1" id="totalCount">0</span> مراجع</div>
-                
-                <!-- زر تفعيل العرض الداخلي للمجلدات السحابية -->
-                <button id="btnTriggerEmbed" onclick="loadEmbeddedFolder()" class="hidden bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-sm transition items-center gap-1.5 animate-pulse">
-                    <i class="fa-solid fa-folder-tree"></i> تصفح المجلد السحابي للملفات
-                </button>
             </div>
             
             <div class="flex flex-wrap gap-2 md:mr-auto">
@@ -135,29 +131,6 @@
                     <i class="fa-solid fa-cloud-arrow-up"></i> المزامنة السحابية
                 </button>
                 <input type="file" id="importInput" accept=".json" style="display:none" onchange="importBackup(this)">
-            </div>
-        </div>
-
-        <!-- ============================================================ -->
-        <!-- قسم معالج العرض الداخلي للمجلدات السحابية (Embedded View) -->
-        <!-- ============================================================ -->
-        <div id="embeddedViewerSection" class="hidden mb-8 bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-md transition-all duration-300">
-            <div class="bg-slate-900 text-white p-4 flex justify-between items-center">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-folder-open text-brand-gold text-base"></i>
-                    <span id="currentActiveCategory" class="font-bold text-sm">تصفح المجلد السحابي المباشر</span>
-                </div>
-                <div class="flex gap-2">
-                    <a id="btnOpenExternal" href="#" target="_blank" class="bg-white/10 hover:bg-white/20 text-xs text-white px-3 py-1.5 rounded-lg transition font-bold flex items-center gap-1">
-                        <i class="fa-solid fa-up-right-from-square"></i> فتح في نافذة مستقلة
-                    </a>
-                    <button onclick="closeViewer()" class="bg-rose-600/90 hover:bg-rose-600 text-xs text-white px-3 py-1.5 rounded-lg transition font-bold">
-                        <i class="fa-solid fa-xmark"></i> إغلاق المعاين
-                    </button>
-                </div>
-            </div>
-            <div class="relative w-full h-[580px] bg-slate-100">
-                <iframe id="libraryIframe" src="about:blank" class="w-full h-full border-none" allow="autoplay"></iframe>
             </div>
         </div>
 
@@ -241,57 +214,14 @@
     <script>
         const GOOGLE_SHEET_MACRO_URL = "https://script.google.com/macros/s/AKfycby2NSTgK_rThJeoLaDDg6HTx2BUOJH62CaKs1NqkFX4teXpBmob-26VhJuN91Le6TYG/exec";
 
-        /* * كلمات المرور للنظام
+        /* * كلمات المرور للنظام (يمكنك تغييرها هنا)
          * - المدير (يملك صلاحية الاستعادة والحذف التام والمزامنة)
          * - أمين المكتبة (إضافة، حذف، مزامنة، أخذ نسخة احتياطية)
          */
         const PASSWORDS = {
-            ADMIN: "998877",      
-            LIBRARIAN: "112233"   
+            ADMIN: "998877",      // باسورد مدير التطبيق
+            LIBRARIAN: "112233"   // باسورد مسؤول المكتبة
         };
-
-        // الروابط السحابية للمجلدات (العرض المباشر والعرض المدمج)
-        const libraryEmbedFolders = {
-            "specialized": "https://drive.google.com/embeddedfolderview?id=1QSmIDcS3syfWelrOXThFWUWPYUbUn2p3#grid",
-            "general": "https://drive.google.com/embeddedfolderview?id=1ouEN6Ctb8-sRG8U7MkeaGIHDi_76vz0n#grid",
-            "research": "https://drive.google.com/embeddedfolderview?id=1p_qBtu67OBxT_f-UzwrFvF1CrCcwDnmA#grid",
-            "projects": "https://drive.google.com/embeddedfolderview?id=1GYVNuCp_kOhrH1Cl9oCcA02OdqwagxFV#grid"
-        };
-
-        const libraryDirectFolders = {
-            "specialized": "https://drive.google.com/drive/folders/1QSmIDcS3syfWelrOXThFWUWPYUbUn2p3?usp=drive_link",
-            "general": "https://drive.google.com/drive/folders/1ouEN6Ctb8-sRG8U7MkeaGIHDi_76vz0n?usp=drive_link",
-            "research": "https://drive.google.com/drive/folders/1p_qBtu67OBxT_f-UzwrFvF1CrCcwDnmA?usp=drive_link",
-            "projects": "https://drive.google.com/drive/folders/1GYVNuCp_kOhrH1Cl9oCcA02OdqwagxFV?usp=drive_link"
-        };
-
-        // مصفوفة البيانات الوصفية الأكاديمية الثابتة (Seeded Core Metadata)
-        const staticMetadata = [
-          {
-            "id": "STATIC_001",
-            "title": "في انتظار جودو",
-            "author": "صمويل بيكيت",
-            "year": 2026,
-            "tag": "general",
-            "hasFile": true,
-            "isStatic": true,
-            "fileUrl": "https://drive.google.com/file/d/1ouEN6Ctb8-sRG8U7MkeaGIHDi_76vz0n/view?usp=sharing",
-            "directDownloadUrl": "https://drive.google.com/uc?export=download&id=1ouEN6Ctb8-sRG8U7MkeaGIHDi_76vz0n",
-            "apaCitation": "بيكيت، ص. (2026). في انتظار جودو. [كتب عامة]."
-          },
-          {
-            "id": "STATIC_002",
-            "title": "جماليات التشكيل اللوني في الفنون الليبية المعاصرة",
-            "author": "د. محمد اقميع",
-            "year": 2025,
-            "tag": "research",
-            "hasFile": true,
-            "isStatic": true,
-            "fileUrl": "https://drive.google.com/file/d/1p_qBtu67OBxT_f-UzwrFvF1CrCcwDnmA/view?usp=sharing",
-            "directDownloadUrl": "https://drive.google.com/uc?export=download&id=1p_qBtu67OBxT_f-UzwrFvF1CrCcwDnmA",
-            "apaCitation": "اقميع، م. (2025). جماليات التشكيل اللوني في الفنون الليبية المعاصرة. مجلة البحوث والاستشارات العلمية، كلية الفنون والتصميم."
-          }
-        ];
 
         var currentRole = localStorage.getItem('appRole') || 'visitor';
         var books = [];
@@ -318,273 +248,4 @@
             if (currentRole === 'admin') { text = "صلاحيات الإدارة الشاملة"; color = "text-red-400 border-red-400 bg-red-900/20"; }
             if (currentRole === 'librarian') { text = "مسؤول المكتبة الأكاديمية"; color = "text-green-400 border-green-400 bg-green-900/20"; }
             
-            document.getElementById('roleBadge').className = `text-xs font-bold px-3 py-1 rounded-full border flex items-center gap-2 transition-all ${color}`;
-            document.getElementById('roleText').textContent = text;
-            
-            if (currentRole !== 'visitor') {
-                document.getElementById('btnLogin').classList.add('hidden');
-                document.getElementById('btnLogout').classList.remove('hidden');
-            } else {
-                document.getElementById('btnLogin').classList.remove('hidden');
-                document.getElementById('btnLogout').classList.add('hidden');
-            }
-        }
-
-        function openLogin() { document.getElementById('loginModal').classList.add('open'); document.getElementById('pinInput').value = ''; document.getElementById('pinInput').focus(); }
-        function closeLogin() { document.getElementById('loginModal').classList.remove('open'); }
-        
-        function verifyLogin() {
-            var pin = document.getElementById('pinInput').value;
-            if (pin === PASSWORDS.ADMIN) {
-                currentRole = 'admin'; showToast('أهلاً بك.. تم تفعيل صلاحيات الإدارة');
-            } else if (pin === PASSWORDS.LIBRARIAN) {
-                currentRole = 'librarian'; showToast('أهلاً بك.. تم تفعيل صلاحيات مسؤول المكتبة');
-            } else {
-                showToast('رمز الوصول غير صحيح'); return;
-            }
-            localStorage.setItem('appRole', currentRole);
-            applyRoleUI();
-            closeLogin();
-        }
-
-        function logout() {
-            currentRole = 'visitor';
-            localStorage.setItem('appRole', currentRole);
-            applyRoleUI();
-            showToast('تم تسجيل الخروج. واجهة الزوار مفعلة.');
-        }
-
-        /* ===== قاعدة البيانات والمراجع ===== */
-        function initDB() {
-            var req = indexedDB.open("FacultyArtsLibraryDB", 1);
-            req.onupgradeneeded = function(e) { db = e.target.result; if (!db.objectStoreNames.contains("booksStore")) { db.createObjectStore("booksStore", { keyPath: "id" }); } };
-            req.onsuccess = function(e) { db = e.target.result; loadBooks(); };
-        }
-
-        function loadBooks() {
-            var tx = db.transaction("booksStore", "readonly");
-            tx.objectStore("booksStore").getAll().onsuccess = function(e) {
-                var dynamicBooks = e.target.result;
-                // دمج مصفوفة البيانات الوصفية الجاهزة مع الملفات المرفوعة محلياً
-                books = [...staticMetadata, ...dynamicBooks].sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
-                renderCards(); 
-                updateStats();
-            };
-        }
-
-        function openModal() {
-            if (currentRole === 'visitor') return;
-            document.getElementById('modalBg').classList.add('open');
-            document.getElementById('fTitle').value = ''; document.getElementById('fAuthor').value = '';
-            document.getElementById('fileChosen').textContent = ''; document.getElementById('fileInput').value = ''; pendingFileBlob = null;
-        }
-        function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
-        function onFileSelect(inp) { var f = inp.files[0]; if (!f) return; pendingFileBlob = f; document.getElementById('fileChosen').textContent = '✓ ' + f.name; }
-
-        function saveBook() {
-            if (currentRole === 'visitor') return; 
-            var title = document.getElementById('fTitle').value.trim();
-            var author = document.getElementById('fAuthor').value.trim();
-            var year = document.getElementById('fYear').value.trim() || "2026";
-            var selectedTag = document.getElementById('fTag').value;
-            
-            if (!title || !author) { showToast('يرجى تعبئة الحقول الأساسية'); return; }
-            
-            var apaStr = author + ". (" + year + "). " + title + ". [" + TAG_LABELS[selectedTag] + "].";
-            
-            var b = { 
-                id: Math.random().toString(36).substr(2, 9), 
-                title: title, 
-                author: author, 
-                year: year, 
-                tag: selectedTag, 
-                hasFile: !!pendingFileBlob, 
-                timestamp: Date.now(),
-                apaCitation: apaStr
-            };
-            if (pendingFileBlob) b.fileBlob = pendingFileBlob;
-
-            var tx = db.transaction("booksStore", "readwrite");
-            tx.objectStore("booksStore").add(b);
-            tx.oncomplete = function() { closeModal(); loadBooks(); showToast('تم الحفظ بنجاح ✓'); };
-        }
-
-        function deleteBook(id) {
-            if (currentRole === 'visitor') { showToast('ليس لديك صلاحية الحذف'); return; }
-            if (!confirm('هل تود حذف هذا المرجع نهائياً؟')) return;
-            var tx = db.transaction("booksStore", "readwrite");
-            tx.objectStore("booksStore").delete(id);
-            tx.oncomplete = function() { loadBooks(); showToast('تمت إزالة المرجع'); };
-        }
-
-        function getBlobAndDo(id, action) {
-            // التحقق أولاً إذا كان الملف من البيانات الوصفية السحابية الثابتة
-            var sItem = staticMetadata.find(item => item.id === id);
-            if (sItem) {
-                if (action === 'open') {
-                    window.open(sItem.fileUrl, '_blank');
-                } else {
-                    window.open(sItem.directDownloadUrl, '_blank');
-                }
-                return;
-            }
-
-            // الاستعادة من المعالجة المحلية المستندة لـ IndexedDB
-            var tx = db.transaction("booksStore", "readonly");
-            tx.objectStore("booksStore").get(id).onsuccess = function(e) {
-                if(!e.target.result || !e.target.result.fileBlob) return;
-                var url = URL.createObjectURL(e.target.result.fileBlob);
-                if (action === 'open') { window.open(url, '_blank'); } else { var a = document.createElement('a'); a.href = url; a.download = e.target.result.title + '.pdf'; a.click(); }
-                setTimeout(() => URL.revokeObjectURL(url), 6000);
-            };
-        }
-
-        function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-
-        /* ===== معالج الدالة الذكية (Parser Logic UI Rendering) ===== */
-        function renderCards() {
-            var g = document.getElementById('cardsGrid');
-            var q = document.getElementById('sInput').value.trim().toLowerCase();
-            var filterTag = document.getElementById('sTag').value;
-            g.innerHTML = '';
-            
-            var displayedCount = 0;
-
-            if (!books.length) { g.innerHTML = '<div class="empty-state text-center text-gray-400 py-12 col-span-full"><i class="fa-solid fa-box-open text-4xl block mb-2 opacity-40"></i>المكتبة فارغة حالياً.</div>'; return; }
-
-            books.forEach(function(b) {
-                if (q && !(b.title + b.author).toLowerCase().includes(q)) return;
-                if (filterTag && b.tag !== filterTag) return;
-
-                displayedCount++;
-
-                var fileHTML = b.hasFile
-                    ? '<div class="grid grid-cols-2 gap-2"><button class="bg-brand-blue text-white rounded-lg py-1.5 text-xs font-bold hover:bg-opacity-90 transition" onclick="getBlobAndDo('' + b.id + '','open')"><i class="fa-solid fa-book-open"></i> قراءة</button><button class="bg-emerald-700 text-white rounded-lg py-1.5 text-xs font-bold hover:bg-opacity-90 transition" onclick="getBlobAndDo('' + b.id + '','dl')"><i class="fa-solid fa-download"></i> تحميل</button></div>'
-                    : '<span class="text-xs text-center p-2 rounded-lg bg-amber-50 text-amber-700 block font-semibold"><i class="fa-solid fa-circle-info"></i> بيانات بيبلوغرافية فقط</span>';
-
-                var citationText = b.apaCitation ? b.apaCitation : (esc(b.author) + ". (" + esc(b.year) + "). <i>" + esc(b.title) + "</i>. [" + TAG_LABELS[b.tag] + "].");
-                var deleteBtn = b.isStatic ? '' : '<button class="auth-required w-full text-center text-red-700 border border-red-200 py-1 rounded-lg text-xs hover:bg-red-50 transition" onclick="deleteBook('' + b.id + '')"><i class="fa-solid fa-trash"></i> حذف المرجع نهائياً</button>';
-
-                var c = document.createElement('div'); 
-                c.className = 'ref-card';
-                c.innerHTML = `
-                    <div class="flex justify-between items-start gap-2">
-                        <h4 class="font-bold text-gray-800 text-sm leading-snug line-clamp-2">${esc(b.title)}</h4>
-                        <i class="fa-solid ${TAG_ICONS[b.tag]} text-brand-blue opacity-80"></i>
-                    </div>
-                    <div class="text-xs text-gray-500 font-semibold">
-                        <i class="fa-solid fa-pen-nib"></i> ${esc(b.author)} (${esc(b.year)})
-                    </div>
-                    <div>
-                        <span class="tag ${TAG_CSS[b.tag]}">${TAG_LABELS[b.tag]}</span>
-                    </div>
-                    <div class="card-citation">
-                        <b>APA 7:</b> ${citationText}
-                    </div>
-                    <div class="space-y-2 mt-auto pt-2 border-t">
-                        ${fileHTML}
-                        ${deleteBtn}
-                    </div>
-                `;
-                g.appendChild(c);
-            });
-
-            if (displayedCount === 0) {
-                g.innerHTML = '<div class="empty-state text-center text-gray-400 py-12 col-span-full"><i class="fa-solid fa-magnifying-glass text-4xl block mb-2 opacity-40"></i>لم يتم العثور على مراجع مطابقة للبحث.</div>';
-            }
-        }
-
-        /* ===== التحكم في تصفح المعاين الداخلي (Embedded Viewer Logic) ===== */
-        function doFilter() { 
-            renderCards(); 
-            
-            var filterTag = document.getElementById('sTag').value;
-            var btnEmbed = document.getElementById('btnTriggerEmbed');
-            
-            // إظهار زر المعاينة الحية فقط في حال اختيار قسم محدد يملك مجلداً سحابياً
-            if (filterTag && libraryEmbedFolders[filterTag]) {
-                btnEmbed.style.display = 'inline-flex';
-                btnEmbed.innerHTML = `<i class="fa-solid fa-folder-tree text-brand-gold"></i> تصفح مجلد [${TAG_LABELS[filterTag]}] داخلياً`;
-            } else {
-                btnEmbed.style.display = 'none';
-                closeViewer();
-            }
-        }
-
-        function loadEmbeddedFolder() {
-            var filterTag = document.getElementById('sTag').value;
-            if (!filterTag || !libraryEmbedFolders[filterTag]) return;
-            
-            var viewerSection = document.getElementById('embeddedViewerSection');
-            var iframe = document.getElementById('libraryIframe');
-            var titleText = document.getElementById('currentActiveCategory');
-            var openExternal = document.getElementById('btnOpenExternal');
-            
-            titleText.textContent = `معاينة حية متكاملة للمحتوى السحابي: ${TAG_LABELS[filterTag]}`;
-            iframe.src = libraryEmbedFolders[filterTag];
-            openExternal.href = libraryDirectFolders[filterTag];
-            
-            viewerSection.classList.remove('hidden');
-            viewerSection.scrollIntoView({ behavior: 'smooth' });
-        }
-        
-        function closeViewer() {
-            var viewerSection = document.getElementById('embeddedViewerSection');
-            var iframe = document.getElementById('libraryIframe');
-            iframe.src = "about:blank";
-            viewerSection.classList.add('hidden');
-        }
-
-        function updateStats() { document.getElementById('totalCount').textContent = books.length; }
-        function showToast(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3500); }
-
-        function syncToSheets() {
-            if (currentRole === 'visitor') return;
-            if (!navigator.onLine) { showToast('لا توجد إشارة اتصال بالإنترنت حالياً'); return; }
-            showToast('جاري إرسال البيانات إلى السحابة...');
-            var syncData = books.map(function(b) { return { title: b.title, author: b.author, year: b.year, category: TAG_LABELS[b.tag], apa: b.author + ". (" + b.year + "). " + b.title + "." }; });
-            fetch(GOOGLE_SHEET_MACRO_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(syncData) })
-            .then(() => showToast('اكتملت عملية المزامنة السحابية ✓')).catch(() => showToast('خطأ أثناء الاتصال بالخادم'));
-        }
-
-        function exportBackup() {
-            if (currentRole === 'visitor') return;
-            db.transaction("booksStore", "readonly").objectStore("booksStore").getAll().onsuccess = async function(e) {
-                var all = e.target.result; if (!all.length) { showToast('لا توجد سجلات مضافة لتصديرها'); return; }
-                showToast('جاري تصدير الملفات...');
-                var backup = [];
-                for (var b of all) {
-                    var copy = { id: b.id, title: b.title, author: b.author, year: b.year, tag: b.tag, hasFile: b.hasFile, timestamp: b.timestamp, apaCitation: b.apaCitation };
-                    if (b.fileBlob) copy.fileBase64 = await blobToBase64(b.fileBlob); backup.push(copy);
-                }
-                var blob = new Blob([JSON.stringify(backup)], { type: "application/json" });
-                var url = URL.createObjectURL(blob); var a = document.createElement('a'); a.href = url; a.download = "نسخة_احتياطية_مكتبة_الفنون.json"; a.click(); showToast('اكتمل التنزيل ✓');
-            };
-        }
-
-        function importBackup(input) {
-            if (currentRole !== 'admin') { showToast('هذه الخاصية متاحة لمدير النظام فقط'); input.value = ''; return; }
-            var file = input.files[0]; if (!file) return;
-            if (!confirm('تحذير: سيتم دمج السجلات المستوردة. هل تود المتابعة؟')) { input.value = ''; return; }
-            showToast('جاري المعالجة...');
-            var reader = new FileReader();
-            reader.onload = async function(e) {
-                try {
-                    var data = JSON.parse(e.target.result);
-                    for (var b of data) { if (b.fileBase64) { b.fileBlob = await base64ToBlob(b.fileBase64); delete b.fileBase64; } }
-                    var tx = db.transaction("booksStore", "readwrite"); var store = tx.objectStore("booksStore");
-                    data.forEach(item => store.put(item));
-                    tx.oncomplete = function() { loadBooks(); showToast('تمت استعادة البيانات بنجاح ✓'); input.value = ''; };
-                } catch(err) { alert('الملف تالف.'); input.value = ''; }
-            }; reader.readAsText(file);
-        }
-
-        function blobToBase64(blob) { return new Promise((res) => { var r = new FileReader(); r.onloadend = () => res(r.result); r.readAsDataURL(blob); }); }
-        async function base64ToBlob(b64) { var r = await fetch(b64); return await r.blob(); }
-
-        /* ===== التهيئة الأولية عند الإقلاع ===== */
-        applyRoleUI();
-        initDB();
-    </script>
-</body>
-</html>
+            document.getElementById('roleBadge').className = `text-xs font-bold px-3 py-1 rounded-full border flex items-center gap-2 transition-all ${
