@@ -214,38 +214,4 @@
     <script>
         const GOOGLE_SHEET_MACRO_URL = "https://script.google.com/macros/s/AKfycby2NSTgK_rThJeoLaDDg6HTx2BUOJH62CaKs1NqkFX4teXpBmob-26VhJuN91Le6TYG/exec";
 
-        /* * كلمات المرور للنظام (يمكنك تغييرها هنا)
-         * - المدير (يملك صلاحية الاستعادة والحذف التام والمزامنة)
-         * - أمين المكتبة (إضافة، حذف، مزامنة، أخذ نسخة احتياطية)
-         */
-        const PASSWORDS = {
-            ADMIN: "998877",      // باسورد مدير التطبيق
-            LIBRARIAN: "112233"   // باسورد مسؤول المكتبة
-        };
-
-        var currentRole = localStorage.getItem('appRole') || 'visitor';
-        var books = [];
-        var pendingFileBlob = null;
-        var db;
-        
-        var TAG_LABELS = {specialized:'كتب تخصصية', general:'كتب عامة', research:'أبحاث علمية محكمة', projects:'مشاريع تخرج الطلاب'};
-        var TAG_CSS = {specialized:'t-specialized', general:'t-general', research:'t-research', projects:'t-projects'};
-        var TAG_ICONS = {specialized:'fa-book-open', general:'fa-book', research:'fa-microscope', projects:'fa-graduation-cap'};
-
-        // PWA Registration
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('sw.js', { scope: '/arts-library/' });
-            });
-        }
-
-        /* ===== نظام الصلاحيات Authentication ===== */
-        function applyRoleUI() {
-            document.body.setAttribute('data-role', currentRole);
-            var text = "زائر (قراءة فقط)";
-            var color = "text-gray-300 border-gray-400";
-            
-            if (currentRole === 'admin') { text = "صلاحيات الإدارة الشاملة"; color = "text-red-400 border-red-400 bg-red-900/20"; }
-            if (currentRole === 'librarian') { text = "مسؤول المكتبة الأكاديمية"; color = "text-green-400 border-green-400 bg-green-900/20"; }
-            
-            document.getElementById('roleBadge').className = `text-xs font-bold px-3 py-1 rounded-full border flex items-center gap-2 transition-all ${
+        /* * كلمات المرور للنظام
