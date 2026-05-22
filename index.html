@@ -39,16 +39,12 @@
         }
         body { background-color: #F3F4F6; }
         
-        /* * ==========================================
-         * نظام إخفاء العناصر بناءً على الصلاحيات
-         * ==========================================
-         */
+        /* نظام حجب وإخفاء العناصر بناءً على الصلاحيات */
         body[data-role="visitor"] .auth-required,
         body[data-role="visitor"] .admin-only { display: none !important; }
-        
         body[data-role="librarian"] .admin-only { display: none !important; }
 
-        /* تنسيقات الواجهة العامة */
+        /* التنسيقات العامة للواجهة */
         .search-bar { background: var(--white); border-radius: 40px; box-shadow: var(--shadow); display: flex; gap: 10px; align-items: center; padding: 0.6rem 1.5rem; border: 1px solid var(--border); }
         .search-bar input, .search-bar select { border: none; outline: none; background: transparent; font-family: 'Cairo', sans-serif; color: var(--text); }
         .spill { background: var(--white); border: 1px solid var(--border); border-radius: 20px; padding: 6px 16px; font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
@@ -63,7 +59,7 @@
         .t-projects { background: #fef3c7; color: #92400e; }
         .card-citation { font-size: 0.78rem; color: #4a5568; background: #f8fafc; padding: 8px; border-radius: 6px; border-right: 3px solid var(--gold); line-height: 1.5; }
         
-        /* النوافذ المنبثقة والإشعارات */
+        /* النوافذ العائمة والإشعارات */
         .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(3px); }
         .modal-bg.open { display: flex; }
         .drop-area { border: 2px dashed var(--border); border-radius: 10px; padding: 1.2rem; text-align: center; cursor: pointer; transition: background 0.2s; }
@@ -82,10 +78,10 @@
                 <i class="fa-solid fa-user-shield"></i> <span id="roleText">زائر (قراءة فقط)</span>
             </div>
             
-            <button id="btnLogin" onclick="openLogin()" class="text-xs font-bold text-white/80 hover:text-white transition flex items-center gap-1">
+            <button id="btnLogin" class="text-xs font-bold text-white/80 hover:text-white transition flex items-center gap-1">
                 <i class="fa-solid fa-right-to-bracket"></i> دخول الإدارة
             </button>
-            <button id="btnLogout" onclick="logout()" class="hidden text-xs font-bold text-red-300 hover:text-red-100 transition flex items-center gap-1">
+            <button id="btnLogout" class="hidden text-xs font-bold text-red-300 hover:text-red-100 transition flex items-center gap-1">
                 <i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج
             </button>
         </div>
@@ -105,8 +101,8 @@
         
         <div class="search-bar mb-6">
             <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
-            <input type="text" id="sInput" placeholder="البحث السريع عن المراجع، المؤلفين، أو الطلاب..." class="w-full text-sm" oninput="doFilter()">
-            <select id="sTag" class="text-sm bg-transparent cursor-pointer text-gray-500" onchange="doFilter()">
+            <input type="text" id="sInput" placeholder="البحث السريع عن المراجع، المؤلفين، أو الطلاب..." class="w-full text-sm">
+            <select id="sTag" class="text-sm bg-transparent cursor-pointer text-gray-500">
                 <option value="">كل التخصصات</option>
                 <option value="specialized">كتب تخصصية</option>
                 <option value="general">كتب عامة</option>
@@ -121,20 +117,20 @@
             </div>
             
             <div class="flex flex-wrap gap-2 md:mr-auto">
-                <button class="auth-required bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold px-4 py-2 rounded-full hover:bg-blue-100 flex items-center gap-1.5 transition" onclick="exportBackup()">
+                <button id="btnExport" class="auth-required bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold px-4 py-2 rounded-full hover:bg-blue-100 flex items-center gap-1.5 transition">
                     <i class="fa-solid fa-file-export"></i> تنزيل نسخة احتياطية (JSON)
                 </button>
-                <button class="admin-only bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold px-4 py-2 rounded-full hover:bg-amber-100 flex items-center gap-1.5 transition" onclick="document.getElementById('importInput').click()">
+                <button id="btnTriggerImport" class="admin-only bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold px-4 py-2 rounded-full hover:bg-amber-100 flex items-center gap-1.5 transition">
                     <i class="fa-solid fa-file-import"></i> استعادة السجلات
                 </button>
-                <button class="auth-required bg-emerald-600 text-white text-xs font-bold px-5 py-2 rounded-full hover:bg-emerald-700 flex items-center gap-1.5 shadow-sm transition" onclick="syncToSheets()">
+                <button id="btnSync" class="auth-required bg-emerald-600 text-white text-xs font-bold px-5 py-2 rounded-full hover:bg-emerald-700 flex items-center gap-1.5 shadow-sm transition">
                     <i class="fa-solid fa-cloud-arrow-up"></i> المزامنة السحابية
                 </button>
-                <input type="file" id="importInput" accept=".json" style="display:none" onchange="importBackup(this)">
+                <input type="file" id="importInput" accept=".json" style="display:none">
             </div>
         </div>
 
-        <div class="auth-required upload-zone mb-8" onclick="openModal()">
+        <div id="uploadZone" class="auth-required upload-zone mb-8">
             <div class="text-3xl text-brand-blue mb-2"><i class="fa-solid fa-cloud-arrow-up"></i></div>
             <h3 class="font-bold text-brand-blue text-base">إيداع وأرشفة مرجع أكاديمي جديد</h3>
             <p class="text-xs text-gray-500 mt-1">يدعم ملفات PDF بكافة الأحجام - يتم حفظ المرجع بأمان داخل المنظومة</p>
@@ -150,11 +146,11 @@
             <h3 class="text-lg font-bold text-gray-800">صلاحيات الوصول</h3>
             <p class="text-xs text-gray-500 mb-4">أدخل رمز الوصول الخاص بك لتفعيل خواص الإدارة أو مسؤول المكتبة.</p>
             
-            <input type="password" id="pinInput" placeholder="••••••••" class="w-full border-2 text-center text-xl tracking-widest rounded-lg p-3 outline-none focus:border-brand-blue" onkeypress="if(event.key === 'Enter') verifyLogin()">
+            <input type="password" id="pinInput" placeholder="••••••••" class="w-full border-2 text-center text-xl tracking-widest rounded-lg p-3 outline-none focus:border-brand-blue">
             
             <div class="flex gap-2 pt-2">
-                <button class="w-full border rounded-lg p-2 text-sm font-semibold bg-gray-50 hover:bg-gray-100" onclick="closeLogin()">إلغاء</button>
-                <button class="w-full bg-brand-blue text-white rounded-lg p-2 text-sm font-bold hover:bg-opacity-90 shadow-sm" onclick="verifyLogin()">تأكيد الدخول</button>
+                <button id="btnLoginCancel" class="w-full border rounded-lg p-2 text-sm font-semibold bg-gray-50 hover:bg-gray-100">إلغاء</button>
+                <button id="btnLoginConfirm" class="w-full bg-brand-blue text-white rounded-lg p-2 text-sm font-bold hover:bg-opacity-90 shadow-sm">تأكيد الدخول</button>
             </div>
         </div>
     </div>
@@ -187,15 +183,15 @@
                     </select>
                 </div>
             </div>
-            <div class="drop-area" onclick="document.getElementById('fileInput').click()">
+            <div id="dropArea" class="drop-area">
                 <i class="fa-solid fa-file-pdf text-red-600 text-2xl"></i>
                 <p class="text-xs font-bold mt-1 text-gray-700">ارفاق ملف الـ PDF الأصلي</p>
                 <div id="fileChosen" class="text-xs text-emerald-600 font-bold mt-1"></div>
             </div>
-            <input type="file" id="fileInput" accept=".pdf" style="display:none" onchange="onFileSelect(this)">
+            <input type="file" id="fileInput" accept=".pdf" style="display:none">
             <div class="flex gap-2 pt-2">
-                <button class="w-full border rounded-lg p-2 text-sm font-semibold bg-gray-50 hover:bg-gray-100" onclick="closeModal()">إلغاء</button>
-                <button class="w-full bg-brand-blue text-white rounded-lg p-2 text-sm font-bold hover:bg-opacity-90 shadow-sm" onclick="saveBook()">حفظ وإيداع المرجع</button>
+                <button id="btnBookCancel" class="w-full border rounded-lg p-2 text-sm font-semibold bg-gray-50 hover:bg-gray-100">إلغاء</button>
+                <button id="btnBookSave" class="w-full bg-brand-blue text-white rounded-lg p-2 text-sm font-bold hover:bg-opacity-90 shadow-sm">حفظ وإيداع المرجع</button>
             </div>
         </div>
     </div>
@@ -214,4 +210,308 @@
     <script>
         const GOOGLE_SHEET_MACRO_URL = "https://script.google.com/macros/s/AKfycby2NSTgK_rThJeoLaDDg6HTx2BUOJH62CaKs1NqkFX4teXpBmob-26VhJuN91Le6TYG/exec";
 
-        /* * كلمات المرور للنظام
+        const PASSWORDS = {
+            ADMIN: "998877",      
+            LIBRARIAN: "112233"   
+        };
+
+        var currentRole = localStorage.getItem('appRole') || 'visitor';
+        var books = [];
+        var pendingFileBlob = null;
+        var db;
+        
+        var TAG_LABELS = {specialized:'كتب تخصصية', general:'كتب عامة', research:'أبحاث علمية محكمة', projects:'مشاريع تخرج الطلاب'};
+        var TAG_CSS = {specialized:'t-specialized', general:'t-general', research:'t-research', projects:'t-projects'};
+        var TAG_ICONS = {specialized:'fa-book-open', general:'fa-book', research:'fa-microscope', projects:'fa-graduation-cap'};
+
+        // تسجيل الـ Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js', { scope: '/arts-library/' });
+            });
+        }
+
+        /* ===== نظام إدارة الواجهات والصلاحيات ===== */
+        function applyRoleUI() {
+            document.body.setAttribute('data-role', currentRole);
+            var text = "زائر (قراءة فقط)";
+            var color = "text-gray-300 border-gray-400";
+            
+            if (currentRole === 'admin') { text = "صلاحيات الإدارة الشاملة"; color = "text-red-400 border-red-400 bg-red-900/20"; }
+            if (currentRole === 'librarian') { text = "مسؤول المكتبة الأكاديمية"; color = "text-green-400 border-green-400 bg-green-900/20"; }
+            
+            document.getElementById('roleBadge').className = `text-xs font-bold px-3 py-1 rounded-full border flex items-center gap-2 transition-all ${color}`;
+            document.getElementById('roleText').textContent = text;
+            
+            if (currentRole !== 'visitor') {
+                document.getElementById('btnLogin').classList.add('hidden');
+                document.getElementById('btnLogout').classList.remove('hidden');
+            } else {
+                document.getElementById('btnLogin').classList.remove('hidden');
+                document.getElementById('btnLogout').classList.add('hidden');
+            }
+        }
+
+        function openLogin() { 
+            document.getElementById('loginModal').classList.add('open'); 
+            document.getElementById('pinInput').value = ''; 
+            document.getElementById('pinInput').focus(); 
+        }
+        
+        function closeLogin() { 
+            document.getElementById('loginModal').classList.remove('open'); 
+        }
+        
+        function verifyLogin() {
+            var pin = document.getElementById('pinInput').value;
+            if (pin === PASSWORDS.ADMIN) {
+                currentRole = 'admin'; 
+                showToast('أهلاً بك.. تم تفعيل صلاحيات الإدارة');
+            } else if (pin === PASSWORDS.LIBRARIAN) {
+                currentRole = 'librarian'; 
+                showToast('أهلاً بك.. تم تفعيل صلاحيات مسؤول المكتبة');
+            } else {
+                showToast('رمز الوصول غير صحيح'); 
+                return;
+            }
+            localStorage.setItem('appRole', currentRole);
+            applyRoleUI();
+            closeLogin();
+        }
+
+        function logout() {
+            currentRole = 'visitor';
+            localStorage.setItem('appRole', currentRole);
+            applyRoleUI();
+            showToast('تم تسجيل الخروج. واجهة الزوار مفعلة.');
+        }
+
+        /* ===== إعدادات قاعدة البيانات المحلية (IndexedDB) ===== */
+        function initDB() {
+            var req = indexedDB.open("FacultyArtsLibraryDB", 1);
+            req.onupgradeneeded = function(e) { 
+                db = e.target.result; 
+                if (!db.objectStoreNames.contains("booksStore")) { 
+                    db.createObjectStore("booksStore", { keyPath: "id" }); 
+                } 
+            };
+            req.onsuccess = function(e) { 
+                db = e.target.result; 
+                loadBooks(); 
+            };
+        }
+
+        function loadBooks() {
+            var tx = db.transaction("booksStore", "readonly");
+            tx.objectStore("booksStore").getAll().onsuccess = function(e) {
+                books = e.target.result.sort((a,b) => b.timestamp - a.timestamp);
+                renderCards(); 
+                updateStats();
+            };
+        }
+
+        function openModal() {
+            if (currentRole === 'visitor') return;
+            document.getElementById('modalBg').classList.add('open');
+            document.getElementById('fTitle').value = ''; 
+            document.getElementById('fAuthor').value = '';
+            document.getElementById('fileChosen').textContent = ''; 
+            document.getElementById('fileInput').value = ''; 
+            pendingFileBlob = null;
+        }
+        
+        function closeModal() { 
+            document.getElementById('modalBg').classList.remove('open'); 
+        }
+        
+        function onFileSelect(inp) { 
+            var f = inp.files[0]; 
+            if (!f) return; 
+            pendingFileBlob = f; 
+            document.getElementById('fileChosen').textContent = '✓ ' + f.name; 
+        }
+
+        function saveBook() {
+            if (currentRole === 'visitor') return; 
+            var title = document.getElementById('fTitle').value.trim();
+            var author = document.getElementById('fAuthor').value.trim();
+            var year = document.getElementById('fYear').value.trim() || "2026";
+            
+            if (!title || !author) { showToast('يرجى تعبئة الحقول الأساسية'); return; }
+            var b = { id: Math.random().toString(36).substr(2, 9), title: title, author: author, year: year, tag: document.getElementById('fTag').value, hasFile: !!pendingFileBlob, timestamp: Date.now() };
+            if (pendingFileBlob) b.fileBlob = pendingFileBlob;
+
+            var tx = db.transaction("booksStore", "readwrite");
+            tx.objectStore("booksStore").add(b);
+            tx.oncomplete = function() { closeModal(); loadBooks(); showToast('تم الحفظ بنجاح ✓'); };
+        }
+
+        function deleteBook(id) {
+            if (currentRole === 'visitor') { showToast('ليس لديك صلاحية الحذف'); return; }
+            if (!confirm('هل تود حذف هذا المرجع نهائياً؟')) return;
+            var tx = db.transaction("booksStore", "readwrite");
+            tx.objectStore("booksStore").delete(id);
+            tx.oncomplete = function() { loadBooks(); showToast('تمت إزالة المرجع'); };
+        }
+
+        function getBlobAndDo(id, action) {
+            var tx = db.transaction("booksStore", "readonly");
+            tx.objectStore("booksStore").get(id).onsuccess = function(e) {
+                if(!e.target.result || !e.target.result.fileBlob) return;
+                var url = URL.createObjectURL(e.target.result.fileBlob);
+                if (action === 'open') { 
+                    window.open(url, '_blank'); 
+                } else { 
+                    var a = document.createElement('a'); a.href = url; a.download = e.target.result.title + '.pdf'; a.click(); 
+                }
+                setTimeout(() => URL.revokeObjectURL(url), 6000);
+            };
+        }
+
+        function esc(s) { 
+            var d = document.createElement('div'); 
+            d.textContent = s; 
+            return d.innerHTML; 
+        }
+
+        /* ===== بناء وعرض المراجع ديناميكياً باستخدام Template Literals وآمن 100% ===== */
+        function renderCards() {
+            var g = document.getElementById('cardsGrid');
+            var q = document.getElementById('sInput').value.trim().toLowerCase();
+            var filterTag = document.getElementById('sTag').value;
+            g.innerHTML = '';
+            
+            if (!books.length) { 
+                g.innerHTML = '<div class="empty-state text-center text-gray-400 py-12 col-span-full"><i class="fa-solid fa-box-open text-4xl block mb-2 opacity-40"></i>المكتبة فارغة حالياً.</div>'; 
+                return; 
+            }
+
+            books.forEach(function(b) {
+                if (q && !(b.title + b.author).toLowerCase().includes(q)) return;
+                if (filterTag && b.tag !== filterTag) return;
+
+                var fileHTML = b.hasFile
+                    ? `<div class="grid grid-cols-2 gap-2">
+                        <button class="bg-brand-blue text-white rounded-lg py-1.5 text-xs font-bold hover:bg-opacity-90 transition" data-action="open" data-id="${b.id}"><i class="fa-solid fa-book-open"></i> قراءة</button>
+                        <button class="bg-emerald-700 text-white rounded-lg py-1.5 text-xs font-bold hover:bg-opacity-90 transition" data-action="download" data-id="${b.id}"><i class="fa-solid fa-download"></i> تحميل</button>
+                       </div>`
+                    : `<span class="text-xs text-center p-2 rounded-lg bg-amber-50 text-amber-700 block font-semibold"><i class="fa-solid fa-circle-info"></i> بيانات بيبلوغرافية فقط</span>`;
+
+                var apa = esc(b.author) + ". (" + esc(b.year) + "). <i>" + esc(b.title) + "</i>. [" + TAG_LABELS[b.tag] + "].";
+                
+                var c = document.createElement('div'); 
+                c.className = 'ref-card';
+                c.innerHTML = `
+                    <div class="flex justify-between items-start gap-2">
+                        <h4 class="font-bold text-gray-800 text-sm leading-snug line-clamp-2">${esc(b.title)}</h4>
+                        <i class="fa-solid ${TAG_ICONS[b.tag]} text-brand-blue opacity-80"></i>
+                    </div>
+                    <div class="text-xs text-gray-500 font-semibold"><i class="fa-solid fa-pen-nib"></i> ${esc(b.author)} (${esc(b.year)})</div>
+                    <div><span class="tag ${TAG_CSS[b.tag]}">${TAG_LABELS[b.tag]}</span></div>
+                    <div class="card-citation"><b>APA 7:</b> ${apa}</div>
+                    <div class="space-y-2 mt-auto pt-2 border-t">
+                        ${fileHTML}
+                        <button class="auth-required w-full text-center text-red-700 border border-red-200 py-1 rounded-lg text-xs hover:bg-red-50 transition" data-action="delete" data-id="${b.id}"><i class="fa-solid fa-trash"></i> حذف المرجع نهائياً</button>
+                    </div>
+                `;
+                g.appendChild(c);
+            });
+        }
+
+        function doFilter() { renderCards(); }
+        function updateStats() { document.getElementById('totalCount').textContent = books.length; }
+        function showToast(msg) { var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3500); }
+
+        function syncToSheets() {
+            if (currentRole === 'visitor') return;
+            if (!navigator.onLine) { showToast('لا توجد إشارة اتصال بالإنترنت حالياً'); return; }
+            showToast('جاري إرسال البيانات إلى السحابة...');
+            var syncData = books.map(function(b) { return { title: b.title, author: b.author, year: b.year, category: TAG_LABELS[b.tag], apa: b.author + ". (" + b.year + "). " + b.title + "." }; });
+            fetch(GOOGLE_SHEET_MACRO_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(syncData) })
+            .then(() => showToast('اكتملت عملية المزامنة السحابية ✓')).catch(() => showToast('خطأ أثناء الاتصال بالخادم'));
+        }
+
+        function exportBackup() {
+            if (currentRole === 'visitor') return;
+            db.transaction("booksStore", "readonly").objectStore("booksStore").getAll().onsuccess = async function(e) {
+                var all = e.target.result; if (!all.length) { showToast('لا توجد سجلات لتصديرها'); return; }
+                showToast('جاري تصدير الملفات...');
+                var backup = [];
+                for (var b of all) {
+                    var copy = { id: b.id, title: b.title, author: b.author, year: b.year, tag: b.tag, hasFile: b.hasFile, timestamp: b.timestamp };
+                    if (b.fileBlob) copy.fileBase64 = await blobToBase64(b.fileBlob); backup.push(copy);
+                }
+                var blob = new Blob([JSON.stringify(backup)], { type: "application/json" });
+                var url = URL.createObjectURL(blob); var a = document.createElement('a'); a.href = url; a.download = "نسخة_احتياطية_مكتبة_الفنون.json"; a.click(); showToast('اكتمل التنزيل ✓');
+            };
+        }
+
+        function importBackup(input) {
+            if (currentRole !== 'admin') { showToast('هذه الخاصية متاحة لمدير النظام فقط'); input.value = ''; return; }
+            var file = input.files[0]; if (!file) return;
+            if (!confirm('تحذير: سيتم دمج السجلات المستوردة. هل تود المتابعة؟')) { input.value = ''; return; }
+            showToast('جاري المعالجة...');
+            var reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    var data = JSON.parse(e.target.result);
+                    for (var b of data) { if (b.fileBase64) { b.fileBlob = await base64ToBlob(b.fileBase64); delete b.fileBase64; } }
+                    var tx = db.transaction("booksStore", "readwrite"); var store = tx.objectStore("booksStore");
+                    data.forEach(item => store.put(item));
+                    tx.oncomplete = function() { loadBooks(); showToast('تمت استعادة البيانات بنجاح ✓'); input.value = ''; };
+                } catch(err) { alert('الملف تالف.'); input.value = ''; }
+            }; reader.readAsText(file);
+        }
+
+        function blobToBase64(blob) { return new Promise((res) => { var r = new FileReader(); r.onloadend = () => res(r.result); r.readAsDataURL(blob); }); }
+        async function base64ToBlob(b64) { var r = await fetch(b64); return await r.blob(); }
+
+        /* =======================================================
+         * ربط الأحداث وإدارتها برمجياً لمنع تعطل واجهة الـ JavaScript
+         * =======================================================
+         */
+        document.addEventListener("DOMContentLoaded", function() {
+            // أزرار التحكم بالنظام العام
+            document.getElementById('btnLogin').addEventListener('click', openLogin);
+            document.getElementById('btnLogout').addEventListener('click', logout);
+            document.getElementById('btnLoginCancel').addEventListener('click', closeLogin);
+            document.getElementById('btnLoginConfirm').addEventListener('click', verifyLogin);
+            document.getElementById('pinInput').addEventListener('keypress', function(e) { if(e.key === 'Enter') verifyLogin(); });
+            
+            // عناصر البحث والفلترة
+            document.getElementById('sInput').addEventListener('input', doFilter);
+            document.getElementById('sTag').addEventListener('change', doFilter);
+            
+            // أزرار النسخ الاحتياطي والمزامنة
+            document.getElementById('btnExport').addEventListener('click', exportBackup);
+            document.getElementById('btnTriggerImport').addEventListener('click', function() { document.getElementById('importInput').click(); });
+            document.getElementById('importInput').addEventListener('change', function() { importBackup(this); });
+            document.getElementById('btnSync').addEventListener('click', syncToSheets);
+            
+            // إدارة رفع وأرشفة المراجع الجديدة
+            document.getElementById('uploadZone').addEventListener('click', openModal);
+            document.getElementById('dropArea').addEventListener('click', function() { document.getElementById('fileInput').click(); });
+            document.getElementById('fileInput').addEventListener('change', function() { onFileSelect(this); });
+            document.getElementById('btnBookCancel').addEventListener('click', closeModal);
+            document.getElementById('btnBookSave').addEventListener('click', saveBook);
+
+            // آلية تفويض الأحداث للبطاقات (Event Delegation)
+            document.getElementById('cardsGrid').addEventListener('click', function(e) {
+                var btn = e.target.closest('button');
+                if (!btn) return;
+                var action = btn.getAttribute('data-action');
+                var id = btn.getAttribute('data-id');
+                if (!action || !id) return;
+
+                if (action === 'open') getBlobAndDo(id, 'open');
+                if (action === 'download') getBlobAndDo(id, 'dl');
+                if (action === 'delete') deleteBook(id);
+            });
+
+            /* ===== التشغيل الأولي للمنظومة ===== */
+            applyRoleUI();
+            initDB();
+        });
+    </script>
+</body>
+</html>
