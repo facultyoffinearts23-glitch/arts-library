@@ -1,384 +1,442 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>المكتبة الرقمية لكلية الفنون والتصميم</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-  *{box-sizing:border-box;margin:0;padding:0;}
-  :root{
-    --blue:#0a3d7a;
-    --blue-dark:#0c2e5c;
-    --green:#198754;
-    --green-dark:#146c43;
-    --bg:#f4f6f9;
-    --white:#ffffff;
-    --text:#2d3748;
-    --text-muted:#718096;
-    --border:#e2e8f0;
-    --shadow:0 4px 15px rgba(0,0,0,0.07);
-  }
-  body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المكتبة الرقمية الأكاديمية - كلية الفنون والتصميم</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#002B5B">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://files.manuscdn.com/user_upload_by_module/session_file/310519663672341033/DPcqnCesIGqshKoH.webp">
 
-  /* ===== HEADER ===== */
-  header{
-    background:linear-gradient(135deg,#0a3d7a 0%,#0d5199 100%);
-    color:#fff;padding:1.75rem 2rem 3rem;text-align:center;
-  }
-  header h1{font-size:1.6rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;}
-  header p{font-size:0.95rem;opacity:0.88;}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            blue: '#002B5B', // الأزرق الملكي
+                            gold: '#C5A02D', // الذهبي النحاسي
+                            bg: '#F3F4F6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                        mono: ['Consolas', 'Monaco', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --blue: #002B5B;
+            --blue-dark: #001e40;
+            --gold: #C5A02D;
+            --green: #198754;
+            --green-dark: #146c43;
+            --white: #ffffff;
+            --text: #2d3748;
+            --text-muted: #718096;
+            --border: #e2e8f0;
+            --shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+        body { background-color: #F3F4F6; }
+        
+        .search-bar {
+            background: var(--white); border-radius: 40px; box-shadow: var(--shadow);
+            display: flex; gap: 10px; align-items: center; padding: 0.6rem 1.5rem;
+            border: 1px solid var(--border);
+        }
+        .search-bar input, .search-bar select {
+            border: none; outline: none; background: transparent; font-family: 'Cairo', sans-serif; color: var(--text);
+        }
+        
+        .spill {
+            background: var(--white); border: 1px solid var(--border); border-radius: 20px;
+            padding: 6px 16px; font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px;
+        }
+        
+        .upload-zone {
+            background: var(--white); border: 2.5px dashed var(--border); border-radius: 16px;
+            padding: 2rem; text-align: center; cursor: pointer; transition: all 0.2s ease; box-shadow: var(--shadow);
+        }
+        .upload-zone:hover { border-color: var(--blue); background: #f0f4f8; transform: translateY(-2px); }
+        
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+        
+        .ref-card {
+            background: var(--white); border-radius: 14px; border: 1px solid var(--border);
+            padding: 1.25rem; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--shadow); position: relative;
+        }
+        
+        .tag { display: inline-block; padding: 4px 14px; border-radius: 15px; font-size: 0.75rem; font-weight: 700; width: max-content; }
+        .t-specialized { background: #e0f2fe; color: #0369a1; }
+        .t-general { background: #f1f5f9; color: #475569; }
+        .t-research { background: #dcfce7; color: #166534; }
+        .t-projects { background: #fef3c7; color: #92400e; }
 
-  /* ===== CONTAINER ===== */
-  .container{max-width:1200px;margin:-1.5rem auto 5rem;padding:0 1.5rem;}
-
-  /* ===== SEARCH BAR ===== */
-  .search-bar{
-    background:var(--white);border-radius:40px;box-shadow:var(--shadow);
-    display:flex;gap:10px;align-items:center;padding:0.6rem 1.25rem;
-    margin-bottom:1.5rem;border:1px solid var(--border);
-  }
-  .search-bar i{color:#a0aec0;font-size:0.95rem;}
-  .search-bar input{border:none;outline:none;background:transparent;font-family:'Cairo',sans-serif;font-size:0.9rem;flex:1;color:var(--text);}
-  .search-bar select{border:none;outline:none;background:transparent;font-family:'Cairo',sans-serif;font-size:0.88rem;color:var(--text-muted);}
-
-  /* ===== STATS ===== */
-  .stats-row{display:flex;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap;}
-  .spill{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-size:0.8rem;color:var(--text-muted);display:flex;align-items:center;gap:6px;}
-  .spill b{color:var(--blue);font-size:1rem;}
-  .btn-sync{background:#dbeafe;color:#1e40af;border:1px solid #bfdbfe;border-radius:20px;padding:6px 16px;font-family:'Cairo',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:0.2s;margin-right:auto;}
-  .btn-sync:hover{background:#bfdbfe;}
-
-  /* ===== UPLOAD ZONE ===== */
-  .upload-zone{
-    background:var(--white);border:2.5px dashed var(--border);border-radius:16px;
-    padding:1.5rem;text-align:center;margin-bottom:1.5rem;cursor:pointer;
-    transition:border-color 0.2s,background 0.2s;
-  }
-  .upload-zone:hover{border-color:var(--blue);background:#f0f6ff;}
-  .upload-zone .uz-icon{font-size:2.2rem;color:var(--blue);margin-bottom:8px;}
-  .upload-zone p{font-size:0.85rem;color:var(--text-muted);}
-  .upload-zone strong{color:var(--blue);font-size:0.95rem;}
-
-  /* ===== CARDS GRID ===== */
-  .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
-  .ref-card{background:var(--white);border-radius:14px;border:1px solid var(--border);padding:1.1rem;display:flex;flex-direction:column;gap:8px;}
-  .card-top{display:flex;justify-content:space-between;align-items:flex-start;}
-  .card-title{font-size:0.95rem;font-weight:700;color:var(--text);line-height:1.45;flex:1;padding-left:6px;}
-  .card-author{font-size:0.78rem;color:var(--text-muted);}
-  
-  .tag{display:inline-block;padding:3px 12px;border-radius:15px;font-size:0.72rem;font-weight:700;}
-  .t-specialized{background:#dbeafe;color:#1e40af;}
-  .t-general{background:#f1f5f9;color:#475569;}
-  .t-research{background:#dcfce7;color:#166534;}
-  .t-projects{background:#fef3c7;color:#92400e;}
-
-  .card-desc{font-size:0.78rem;color:var(--text-muted);line-height:1.6;}
-  .card-actions{display:flex;flex-direction:column;gap:6px;margin-top:auto;}
-  .btn-read,.btn-dl{background:var(--blue);color:#fff;border:none;border-radius:7px;padding:7px;font-family:'Cairo';font-size:0.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
-  .btn-dl{background:var(--green);}
-  .btn-del{background:transparent;color:#b91c1c;border:1px solid #fca5a5;border-radius:7px;padding:6px;font-family:'Cairo';font-size:0.78rem;cursor:pointer;}
-  .no-file-badge{background:#fef3c7;color:#92400e;font-size:0.7rem;padding:3px 10px;border-radius:12px;display:inline-flex;align-items:center;gap:4px;}
-
-  /* ===== MODAL ===== */
-  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:center;justify-content:center;padding:1rem;}
-  .modal-bg.open{display:flex;}
-  .modal{background:var(--white);border-radius:16px;padding:1.5rem;width:100%;max-width:460px;}
-  .modal h2{font-size:1.05rem;font-weight:700;margin-bottom:1.1rem;}
-  .form-group{margin-bottom:0.9rem;}
-  .form-group label{font-size:0.78rem;font-weight:700;color:var(--text-muted);display:block;margin-bottom:5px;}
-  .form-group input,.form-group select,.form-group textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-family:'Cairo';font-size:0.85rem;}
-  .drop-area{border:2px dashed var(--border);border-radius:10px;padding:1.1rem;text-align:center;cursor:pointer;margin-bottom:0.9rem;}
-  .drop-area p{font-size:0.82rem;color:var(--text-muted);}
-  .modal-btns{display:flex;gap:10px;margin-top:0.9rem;}
-  .btn-cancel,.btn-save{flex:1;padding:9px;border-radius:8px;font-family:'Cairo';cursor:pointer;}
-  .btn-cancel{border:1px solid var(--border);background:transparent;}
-  .btn-save{background:var(--blue);color:#fff;border:none;font-weight:700;flex:2;}
-
-  /* ===== TOAST ===== */
-  .toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;padding:10px 24px;border-radius:25px;font-family:'Cairo';font-size:0.85rem;font-weight:700;z-index:999;opacity:0;transition:0.3s;pointer-events:none;}
-  .toast.show{opacity:1;}
-  .empty-state{text-align:center;padding:3rem;color:var(--text-muted);grid-column:1/-1;}
-</style>
+        .card-citation { font-size: 0.78rem; color: #4a5568; background: #f8fafc; padding: 8px; border-radius: 6px; border-right: 3px solid var(--gold); line-height: 1.5; }
+        
+        .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(2px); }
+        .modal-bg.open { display: flex; }
+        .drop-area { border: 2px dashed var(--border); border-radius: 10px; padding: 1.2rem; text-align: center; cursor: pointer; transition: background 0.2s; }
+        .drop-area:hover { background: #f8fafc; border-color: var(--blue); }
+        
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1a202c; color: #fff; padding: 10px 24px; border-radius: 30px; font-size: 0.88rem; font-weight: 600; z-index: 999; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; text-align: center; }
+        .toast.show { opacity: 1; transform: translate(-50%, -5px); }
+    </style>
 </head>
-<body>
+<body class="text-gray-800 antialiased font-sans flex flex-col min-h-screen bg-brand-bg">
 
-<header>
-  <h1><i class="fa-solid fa-building-columns"></i> المكتبة الرقمية لكلية الفنون والتصميم</h1>
-  <p>تخزين غير محدود للمراجع والبحوث (يعمل Offline)</p>
-</header>
+    <header class="bg-brand-blue text-white py-10 shadow-xl border-b-4 border-brand-gold relative overflow-hidden">
+        <div class="absolute inset-0 opacity-5 mix-blend-overlay bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm mb-3 border border-white/20 shadow-inner">
+                <i class="fa-solid fa-university text-3xl text-brand-gold"></i>
+            </div>
+            <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight mb-2">المكتبة الرقمية الأكاديمية</h1>
+            <h2 class="text-md md:text-xl text-gray-300 font-medium">كلية الفنون والتصميم - جامعة طرابلس</h2>
+            <div class="w-20 h-0.5 bg-brand-gold mx-auto my-3 rounded-full"></div>
+            <p class="text-xs text-brand-gold font-bold tracking-wider uppercase">Faculty of Arts & Design</p>
+        </div>
+    </header>
 
-<div class="container">
-  <div class="search-bar">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <input type="text" id="sInput" placeholder="ابحث عن عنوان، مؤلف..." oninput="doFilter()">
-    <select id="sTag" onchange="doFilter()">
-      <option value="">كل الفئات</option>
-      <option value="specialized">كتب تخصصية</option>
-      <option value="general">كتب عامة</option>
-      <option value="research">أبحاث علمية</option>
-      <option value="projects">مشاريع تخرج</option>
-    </select>
-  </div>
+    <main class="flex-grow max-w-6xl w-full mx-auto px-4 md:px-6 py-8">
+        
+        <div class="search-bar mb-6">
+            <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+            <input type="text" id="sInput" placeholder="البحث السريع عن المراجع، المؤلفين، أو الطلاب..." class="w-full text-sm" oninput="doFilter()">
+            <select id="sTag" class="text-sm bg-transparent cursor-pointer text-gray-500" onchange="doFilter()">
+                <option value="">كل التخصصات</option>
+                <option value="specialized">كتب تخصصية</option>
+                <option value="general">كتب عامة</option>
+                <option value="research">أبحاث علمية محكمة</option>
+                <option value="projects">مشاريع تخرج الطلاب</option>
+            </select>
+        </div>
 
-  <div class="stats-row">
-    <div class="spill"><b id="totalCount">0</b> مرجع</div>
-    <div class="spill"><i class="fa-solid fa-hard-drive"></i> تخزين محلي (IndexedDB)</div>
-    <button class="btn-sync" onclick="syncToSheets()"><i class="fa-solid fa-cloud-arrow-up"></i> مزامنة المراجع مع Google Sheets</button>
-  </div>
+        <div class="flex flex-col md:flex-row gap-3 mb-6 items-stretch md:items-center">
+            <div class="flex gap-2 flex-wrap">
+                <div class="spill">إجمالي الرصيد العلمي: <span class="font-bold text-brand-blue px-1" id="totalCount">0</span> مراجع</div>
+                <div class="spill"><i class="fa-solid fa-shield-halved text-green-600"></i> مستودع محلي آمن (IndexedDB)</div>
+            </div>
+            
+            <div class="flex flex-wrap gap-2 md:mr-auto">
+                <button class="bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold px-4 py-2 rounded-full hover:bg-blue-100 flex items-center gap-1.5 transition" onclick="exportBackup()">
+                    <i class="fa-solid fa-file-export"></i> تصدير نسخة احتياطية
+                </button>
+                <button class="bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold px-4 py-2 rounded-full hover:bg-amber-100 flex items-center gap-1.5 transition" onclick="document.getElementById('importInput').click()">
+                    <i class="fa-solid fa-file-import"></i> استعادة واستيراد JSON
+                </button>
+                <button class="bg-emerald-600 text-white text-xs font-bold px-5 py-2 rounded-full hover:bg-emerald-700 flex items-center gap-1.5 shadow-sm transition" onclick="syncToSheets()">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> المزامنة السحابية (Excel)
+                </button>
+                <input type="file" id="importInput" accept=".json" style="display:none" onchange="importBackup(this)">
+            </div>
+        </div>
 
-  <div class="upload-zone" onclick="openModal()">
-    <div class="uz-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
-    <p><strong>+ رفع مرجع جديد</strong></p>
-    <p>لا يوجد حد أقصى للحجم - يتم الحفظ في قرص الجهاز</p>
-  </div>
+        <div class="upload-zone mb-8" onclick="openModal()">
+            <div class="text-3xl text-brand-blue mb-2"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+            <h3 class="font-bold text-brand-blue text-base">إيداع وأرشفة مرجع أكاديمي جديد</h3>
+            <p class="text-xs text-gray-500 mt-1">يدعم ملفات PDF بكافة الأحجام - يتم حفظ المرجع بأمان داخل المتصفح الخاص بجهازك</p>
+        </div>
 
-  <div class="cards-grid" id="cardsGrid"></div>
-</div>
+        <div class="cards-grid" id="cardsGrid"></div>
+        
+    </main>
 
-<!-- MODAL -->
-<div class="modal-bg" id="modalBg">
-  <div class="modal">
-    <h2><i class="fa-solid fa-file-arrow-up"></i> إضافة مرجع جديد</h2>
-    <div class="form-group">
-      <label>عنوان الكتاب أو البحث *</label>
-      <input type="text" id="fTitle" placeholder="أدخل العنوان الكامل...">
+    <div class="modal-bg" id="modalBg">
+        <div class="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl space-y-4">
+            <h3 class="text-lg font-bold text-brand-blue flex items-center gap-2 border-b pb-2">
+                <i class="fa-solid fa-file-circle-plus text-brand-gold"></i> إدخال بيانات المرجع الأكاديمي
+            </h3>
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-gray-600 block">عنوان الكتاب أو الأطروحة البحثية *</label>
+                <input type="text" id="fTitle" placeholder="العنوان الكامل للمرجع..." class="w-full border rounded-lg p-2 text-sm outline-none focus:border-brand-blue">
+            </div>
+            <div class="space-y-1">
+                <label class="text-xs font-bold text-gray-600 block">اسم الباحث أو المؤلف الدارس *</label>
+                <input type="text" id="fAuthor" placeholder="مثال: د. محمد عجمي" class="w-full border rounded-lg p-2 text-sm outline-none focus:border-brand-blue">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-gray-600 block">سنة النشر (APA)</label>
+                    <input type="number" id="fYear" value="2026" class="w-full border rounded-lg p-2 text-sm outline-none focus:border-brand-blue">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-gray-600 block">التصنيف الأكاديمي</label>
+                    <select id="fTag" class="w-full border rounded-lg p-2 text-sm outline-none focus:border-brand-blue">
+                        <option value="specialized">كتب تخصصية</option>
+                        <option value="general">كتب عامة</option>
+                        <option value="research">أبحاث علمية محكمة</option>
+                        <option value="projects">مشاريع تخرج الطلاب</option>
+                    </select>
+                </div>
+            </div>
+            <div class="drop-area" onclick="document.getElementById('fileInput').click()">
+                <i class="fa-solid fa-file-pdf text-red-600 text-2xl"></i>
+                <p class="text-xs font-bold mt-1 text-gray-700">ارفاق ملف الـ PDF الأصلي</p>
+                <div id="fileChosen" class="text-xs text-emerald-600 font-bold mt-1"></div>
+            </div>
+            <input type="file" id="fileInput" accept=".pdf" style="display:none" onchange="onFileSelect(this)">
+            <div class="flex gap-2 pt-2">
+                <button class="w-full border rounded-lg p-2 text-sm font-semibold bg-gray-50 hover:bg-gray-100" onclick="closeModal()">إلغاء</button>
+                <button class="w-full bg-brand-blue text-white rounded-lg p-2 text-sm font-bold hover:bg-opacity-90 shadow-sm" onclick="saveBook()">حفظ وإيداع المرجع</button>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-      <label>اسم المؤلف *</label>
-      <input type="text" id="fAuthor" placeholder="مثال: أحمد خالد">
-    </div>
-    <div class="form-group">
-      <label>سنة النشر (لنظام APA)</label>
-      <input type="number" id="fYear" placeholder="2024" value="2024">
-    </div>
-    <div class="form-group">
-      <label>التخصص</label>
-      <select id="fTag">
-        <option value="specialized">كتب تخصصية</option>
-        <option value="general">كتب عامة</option>
-        <option value="research">أبحاث علمية</option>
-        <option value="projects">مشاريع تخرج</option>
-      </select>
-    </div>
-    <div class="drop-area" onclick="document.getElementById('fileInput').click()">
-      <i class="fa-solid fa-file-pdf" style="font-size:1.8rem;color:#b91c1c;"></i>
-      <p style="margin-top:6px;">اسحب ملف PDF هنا (حجم غير محدود)</p>
-      <div id="fileChosen" style="color:var(--green);font-weight:bold;margin-top:5px;"></div>
-    </div>
-    <input type="file" id="fileInput" accept=".pdf" style="display:none" onchange="onFileSelect(this)">
-    <div class="modal-btns">
-      <button class="btn-cancel" onclick="closeModal()">إلغاء</button>
-      <button class="btn-save" onclick="saveBook()">حفظ في المكتبة</button>
-    </div>
-  </div>
-</div>
 
-<div class="toast" id="toast"></div>
+    <div class="toast" id="toast"></div>
 
-<script>
-  // رابط Google Apps Script (انظر التعليمات في الأسفل)
-  const GOOGLE_SHEET_MACRO_URL = "https://script.google.com/macros/s/AKfycby2NSTgK_rThJeoLaDDg6HTx2BUOJH62CaKs1NqkFX4teXpBmob-26VhJuN91Le6TYG/exec";
+    <footer class="bg-slate-900 text-gray-400 py-6 border-t border-slate-800">
+        <div class="max-w-6xl mx-auto px-6 text-center space-y-2">
+            <p class="text-sm text-gray-300 font-semibold">
+                قسم البحوث والاستشارات بكلية الفنون والتصميم
+            </p>
+            <div class="flex items-center justify-center gap-2 text-xs text-gray-500">
+                <span>إعداد: د. محمد اقميع</span>
+                <span class="text-brand-gold">&bull;</span>
+                <span>جميع الحقوق محفوظة &copy; 2026</span>
+            </div>
+        </div>
+    </footer>
 
-  var books = [];
-  var pendingFileBlob = null;
-  var db;
-  
-  var TAG_LABELS = {specialized:'كتب تخصصية', general:'كتب عامة', research:'أبحاث علمية', projects:'مشاريع تخرج'};
-  var TAG_CSS = {specialized:'t-specialized', general:'t-general', research:'t-research', projects:'t-projects'};
-  var TAG_ICONS = {specialized:'fa-book-open', general:'fa-book', research:'fa-microscope', projects:'fa-graduation-cap'};
+    <script>
+        const GOOGLE_SHEET_MACRO_URL = "https://script.google.com/macros/s/AKfycby2NSTgK_rThJeoLaDDg6HTx2BUOJH62CaKs1NqkFX4teXpBmob-26VhJuN91Le6TYG/exec";
 
-  /* ===== IndexedDB SETUP ===== */
-  function initDB() {
-    var req = indexedDB.open("FacultyLibraryDB", 1);
-    req.onupgradeneeded = function(e) {
-      db = e.target.result;
-      if (!db.objectStoreNames.contains("booksStore")) {
-        db.createObjectStore("booksStore", { keyPath: "id" });
-      }
-    };
-    req.onsuccess = function(e) {
-      db = e.target.result;
-      loadBooks();
-    };
-    req.onerror = function() { showToast("خطأ في تهيئة قاعدة البيانات المحلية"); };
-  }
+        var books = [];
+        var pendingFileBlob = null;
+        var db;
+        
+        var TAG_LABELS = {specialized:'كتب تخصصية', general:'كتب عامة', research:'أبحاث علمية محكمة', projects:'مشاريع تخرج الطلاب'};
+        var TAG_CSS = {specialized:'t-specialized', general:'t-general', research:'t-research', projects:'t-projects'};
+        var TAG_ICONS = {specialized:'fa-book-open', general:'fa-book', research:'fa-microscope', projects:'fa-graduation-cap'};
 
-  function loadBooks() {
-    var tx = db.transaction("booksStore", "readonly");
-    var store = tx.objectStore("booksStore");
-    var req = store.getAll();
-    req.onsuccess = function() {
-      books = req.result.sort((a,b) => b.timestamp - a.timestamp);
-      renderCards();
-      updateStats();
-    };
-  }
+        // [تعديل النطاق المباشر]: تم ربط الـ Scope باسم مستودع GitHub الفعلي لتجنب أخطاء 404
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js', { scope: '/arts-library/' })
+                .then(function(reg) {
+                    console.log('[PWA] تم تسجيل ملقّب الخدمة بنجاح بالنطاق: ', reg.scope);
+                })
+                .catch(function(err) {
+                    console.error('[PWA] فشل تسجيل ملقّب الخدمة: ', err);
+                });
+            });
+        }
 
-  /* ===== MODAL ===== */
-  function openModal() {
-    document.getElementById('modalBg').classList.add('open');
-    document.getElementById('fTitle').value = '';
-    document.getElementById('fAuthor').value = '';
-    document.getElementById('fileChosen').textContent = '';
-    document.getElementById('fYear').value = new Date().getFullYear();
-    pendingFileBlob = null;
-  }
-  function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
-  
-  /* ===== FILE SELECT (NO LIMIT) ===== */
-  function onFileSelect(inp) {
-    var f = inp.files[0];
-    if (!f) return;
-    pendingFileBlob = f; // تخزين الملف كـ Blob مباشرة مهما كان حجمه
-    document.getElementById('fileChosen').textContent = '✓ ' + f.name + ' (' + (f.size/1024/1024).toFixed(1) + ' MB)';
-  }
+        function initDB() {
+            var req = indexedDB.open("FacultyArtsLibraryDB", 1);
+            req.onupgradeneeded = function(e) {
+                db = e.target.result;
+                if (!db.objectStoreNames.contains("booksStore")) {
+                    db.createObjectStore("booksStore", { keyPath: "id" });
+                }
+            };
+            req.onsuccess = function(e) {
+                db = e.target.result;
+                loadBooks();
+            };
+            req.onerror = function() { showToast("فشل في تهيئة مساحة التخزين المحلية"); };
+        }
 
-  /* ===== SAVE BOOK ===== */
-  function uid() { return Math.random().toString(36).substr(2, 9); }
+        function loadBooks() {
+            var tx = db.transaction("booksStore", "readonly");
+            var req = tx.objectStore("booksStore").getAll();
+            req.onsuccess = function() {
+                books = req.result.sort((a,b) => b.timestamp - a.timestamp);
+                renderCards();
+                updateStats();
+            };
+        }
 
-  function saveBook() {
-    var title = document.getElementById('fTitle').value.trim();
-    var author = document.getElementById('fAuthor').value.trim();
-    var year = document.getElementById('fYear').value.trim() || new Date().getFullYear();
-    
-    if (!title || !author) { showToast('الرجاء إدخال العنوان والمؤلف'); return; }
-    
-    var b = {
-      id: uid(),
-      title: title,
-      author: author,
-      year: year,
-      tag: document.getElementById('fTag').value,
-      hasFile: !!pendingFileBlob,
-      timestamp: Date.now()
-    };
-    if (pendingFileBlob) b.fileBlob = pendingFileBlob;
+        function openModal() {
+            document.getElementById('modalBg').classList.add('open');
+            document.getElementById('fTitle').value = '';
+            document.getElementById('fAuthor').value = '';
+            document.getElementById('fileChosen').textContent = '';
+            document.getElementById('fileInput').value = '';
+            pendingFileBlob = null;
+        }
+        function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
+        
+        function onFileSelect(inp) {
+            var f = inp.files[0];
+            if (!f) return;
+            pendingFileBlob = f; 
+            document.getElementById('fileChosen').textContent = '✓ ' + f.name + ' (' + (f.size/1024/1024).toFixed(1) + ' MB)';
+        }
 
-    var tx = db.transaction("booksStore", "readwrite");
-    tx.objectStore("booksStore").add(b);
-    tx.oncomplete = function() {
-      closeModal();
-      loadBooks(); // إعادة التحميل لضمان العرض
-      showToast('تم الحفظ في قرص الجهاز بنجاح ✓');
-    };
-  }
+        function saveBook() {
+            var title = document.getElementById('fTitle').value.trim();
+            var author = document.getElementById('fAuthor').value.trim();
+            var year = document.getElementById('fYear').value.trim() || "2026";
+            
+            if (!title || !author) { showToast('يرجى تعبئة الحقول الأساسية الحيوية'); return; }
+            
+            var b = {
+                id: Math.random().toString(36).substr(2, 9),
+                title: title, author: author, year: year,
+                tag: document.getElementById('fTag').value,
+                hasFile: !!pendingFileBlob, timestamp: Date.now()
+            };
+            if (pendingFileBlob) b.fileBlob = pendingFileBlob;
 
-  /* ===== DELETE ===== */
-  function deleteBook(id) {
-    if (!confirm('هل أنت متأكد من الحذف النهائي؟')) return;
-    var tx = db.transaction("booksStore", "readwrite");
-    tx.objectStore("booksStore").delete(id);
-    tx.oncomplete = function() {
-      loadBooks();
-      showToast('تم حذف المرجع');
-    };
-  }
+            var tx = db.transaction("booksStore", "readwrite");
+            tx.objectStore("booksStore").add(b);
+            tx.oncomplete = function() {
+                closeModal();
+                loadBooks();
+                showToast('تم حفظ وأرشفة المرجع في المكتبة الأكاديمية بنجاح ✓');
+            };
+        }
 
-  /* ===== PDF ACTIONS ===== */
-  function getBlobAndDo(id, action) {
-    var tx = db.transaction("booksStore", "readonly");
-    var req = tx.objectStore("booksStore").get(id);
-    req.onsuccess = function() {
-      if(!req.result || !req.result.fileBlob) return;
-      var url = URL.createObjectURL(req.result.fileBlob);
-      if (action === 'open') {
-        window.open(url, '_blank');
-      } else {
-        var a = document.createElement('a');
-        a.href = url; a.download = req.result.title + '.pdf'; a.click();
-      }
-      setTimeout(() => URL.revokeObjectURL(url), 5000);
-    };
-  }
+        function deleteBook(id) {
+            if (!confirm('هل تود حذف هذا المرجع نهائياً وبشكل قطعي من جهازك؟')) return;
+            var tx = db.transaction("booksStore", "readwrite");
+            tx.objectStore("booksStore").delete(id);
+            tx.oncomplete = function() { loadBooks(); showToast('تمت إزالة المرجع من السجلات الحالية'); };
+        }
 
-  /* ===== RENDER ===== */
-  function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+        function getBlobAndDo(id, action) {
+            var tx = db.transaction("booksStore", "readonly");
+            var req = tx.objectStore("booksStore").get(id);
+            req.onsuccess = function() {
+                if(!req.result || !req.result.fileBlob) return;
+                var url = URL.createObjectURL(req.result.fileBlob);
+                if (action === 'open') { window.open(url, '_blank'); } 
+                else { var a = document.createElement('a'); a.href = url; a.download = req.result.title + '.pdf'; a.click(); }
+                setTimeout(() => URL.revokeObjectURL(url), 6000);
+            };
+        }
 
-  function renderCards() {
-    var g = document.getElementById('cardsGrid');
-    var q = document.getElementById('sInput').value.trim().toLowerCase();
-    var filterTag = document.getElementById('sTag').value;
+        function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
-    g.innerHTML = '';
-    if (!books.length) {
-      g.innerHTML = '<div class="empty-state">لا توجد مراجع بعد. ابدأ برفع الملفات.</div>';
-      return;
-    }
+        function renderCards() {
+            var g = document.getElementById('cardsGrid');
+            var q = document.getElementById('sInput').value.trim().toLowerCase();
+            var filterTag = document.getElementById('sTag').value;
+            g.innerHTML = '';
+            
+            if (!books.length) {
+                g.innerHTML = '<div class="empty-state text-center text-gray-400 py-12 col-span-full"><i class="fa-solid fa-box-open text-4xl block mb-2 opacity-40"></i>المكتبة فارغة حالياً، تفضل بإيداع أول مرجع علمي.</div>';
+                return;
+            }
 
-    books.forEach(function(b) {
-      if (q && !(b.title + b.author).toLowerCase().includes(q)) return;
-      if (filterTag && b.tag !== filterTag) return;
+            books.forEach(function(b) {
+                if (q && !(b.title + b.author).toLowerCase().includes(q)) return;
+                if (filterTag && b.tag !== filterTag) return;
 
-      var fileHTML = b.hasFile
-        ? '<button class="btn-read" onclick="getBlobAndDo(\'' + b.id + '\',\'open\')">قراءة PDF</button>'
-          + '<button class="btn-dl" onclick="getBlobAndDo(\'' + b.id + '\',\'dl\')">تحميل PDF</button>'
-        : '<span class="no-file-badge">بدون ملف PDF</span>';
+                var fileHTML = b.hasFile
+                    ? '<div class="grid grid-cols-2 gap-2">'
+                        + '<button class="bg-brand-blue text-white rounded-lg py-1.5 text-xs font-bold hover:bg-opacity-90 transition" onclick="getBlobAndDo(\'' + b.id + '\',\'open\')"><i class="fa-solid fa-book-open"></i> قراءة</button>'
+                        + '<button class="bg-emerald-700 text-white rounded-lg py-1.5 text-xs font-bold hover:bg-opacity-90 transition" onclick="getBlobAndDo(\'' + b.id + '\',\'dl\')"><i class="fa-solid fa-download"></i> تحميل</button>'
+                     + '</div>'
+                    : '<span class="text-xs text-center p-2 rounded-lg bg-amber-50 text-amber-700 block font-semibold"><i class="fa-solid fa-circle-info"></i> بيانات بيبلوغرافية فقط</span>';
 
-      // توليد التوثيق APA
-      var apaCitation = esc(b.author) + ". (" + esc(b.year) + "). <i>" + esc(b.title) + "</i>. [" + TAG_LABELS[b.tag] + "].";
+                var apa = esc(b.author) + ". (" + esc(b.year) + "). <i>" + esc(b.title) + "</i>. [" + TAG_LABELS[b.tag] + "].";
 
-      var c = document.createElement('article');
-      c.className = 'ref-card';
-      c.innerHTML =
-        '<div class="card-top">'
-          + '<h3 class="card-title">' + esc(b.title) + '</h3>'
-          + '<i class="fa-solid ' + (TAG_ICONS[b.tag]) + '" style="color:var(--blue);"></i>'
-        + '</div>'
-        + '<div class="card-author"><i class="fa-solid fa-user-pen"></i> ' + esc(b.author) + ' (' + esc(b.year) + ')</div>'
-        + '<div style="margin:5px 0;"><span class="tag ' + TAG_CSS[b.tag] + '">' + TAG_LABELS[b.tag] + '</span></div>'
-        + '<div style="font-size:0.75rem; color:#718096; background:#f4f6f9; padding:5px; border-radius:5px; margin-bottom:8px;" title="توثيق APA"><b>APA:</b> ' + apaCitation + '</div>'
-        + '<div class="card-actions">' + fileHTML + '<button class="btn-del" onclick="deleteBook(\'' + b.id + '\')">حذف</button></div>';
-      g.appendChild(c);
-    });
-  }
+                var c = document.createElement('div');
+                c.className = 'ref-card';
+                c.innerHTML = 
+                    '<div class="flex justify-between items-start gap-2">'
+                        + '<h4 class="font-bold text-gray-800 text-sm leading-snug line-clamp-2">' + esc(b.title) + '</h4>'
+                        + '<i class="fa-solid ' + TAG_ICONS[b.tag] + ' text-brand-blue opacity-80"></i>'
+                    + '</div>'
+                    + '<div class="text-xs text-gray-500 font-semibold"><i class="fa-solid fa-pen-nib"></i> ' + esc(b.author) + ' (' + esc(b.year) + ')</div>'
+                    + '<div><span class="tag ' + TAG_CSS[b.tag] + '">' + TAG_LABELS[b.tag] + '</span></div>'
+                    + '<div class="card-citation"><b>APA 7:</b> ' + apa + '</div>'
+                    + '<div class="space-y-2 mt-auto pt-2 border-t">' + fileHTML + '<button class="w-full text-center text-red-700 border border-red-200 py-1 rounded-lg text-xs hover:bg-red-50 transition" onclick="deleteBook(\'' + b.id + '\')"><i class="fa-solid fa-trash"></i> حذف المرجع نهائياً</button></div>';
+                g.appendChild(c);
+            });
+        }
 
-  function doFilter() { renderCards(); }
-  function updateStats() { document.getElementById('totalCount').textContent = books.length; }
-  function showToast(msg) {
-    var t = document.getElementById('toast');
-    t.textContent = msg; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
-  }
+        function doFilter() { renderCards(); }
+        function updateStats() { document.getElementById('totalCount').textContent = books.length; }
+        
+        function showToast(msg) {
+            var t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3500);
+        }
 
-  /* ===== SYNC TO GOOGLE SHEETS ===== */
-  function syncToSheets() {
-    if (!navigator.onLine) { showToast('يرجى الاتصال بالإنترنت أولاً'); return; }
-    if (GOOGLE_SHEET_MACRO_URL === "أضف_رابط_سكربت_جوجل_هنا") {
-      alert("الرجاء إضافة رابط Google Apps Script في الكود البرمجي لتفعيل المزامنة.");
-      return;
-    }
-    
-    showToast('جاري تحضير البيانات للمزامنة...');
-    
-    // إرسال البيانات (العنوان، المؤلف، توثيق APA، التخصص)
-    var syncData = books.map(function(b) {
-      return {
-        title: b.title,
-        author: b.author,
-        year: b.year,
-        category: TAG_LABELS[b.tag],
-        apa: b.author + ". (" + b.year + "). " + b.title + ". [" + TAG_LABELS[b.tag] + "]."
-      };
-    });
+        function syncToSheets() {
+            if (!navigator.onLine) { showToast('لا توجد إشارة اتصال بالإنترنت حالياً'); return; }
+            showToast('جاري تحضير المخططات النصية وإرسالها إلى مصفوفة Google...');
+            
+            var syncData = books.map(function(b) {
+                return { title: b.title, author: b.author, year: b.year, category: TAG_LABELS[b.tag], apa: b.author + ". (" + b.year + "). " + b.title + "." };
+            });
 
-    fetch(GOOGLE_SHEET_MACRO_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(syncData)
-    }).then(() => {
-      showToast('تمت المزامنة مع Excel / Google Sheets بنجاح!');
-    }).catch((e) => {
-      showToast('حدث خطأ في المزامنة');
-    });
-  }
+            fetch(GOOGLE_SHEET_MACRO_URL, {
+                method: "POST", mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(syncData)
+            }).then(() => { showToast('اكتملت عملية المزامنة السحابية مع جدول الكلية بنجاح ✓'); })
+              .catch(() => { showToast('حدث خطأ أثناء الاتصال بالخادم السحابي'); });
+        }
 
-  /* ===== INIT ===== */
-  initDB();
-</script>
+        function exportBackup() {
+            var tx = db.transaction("booksStore", "readonly");
+            tx.objectStore("booksStore").getAll().onsuccess = async function(e) {
+                var all = e.target.result;
+                if (!all.length) { showToast('لا توجد سجلات لتصديرها'); return; }
+                showToast('جاري ضغط ومعالجة الملفات الثنائية الكبيرة...');
+                
+                var backup = [];
+                for (var b of all) {
+                    var copy = { id: b.id, title: b.title, author: b.author, year: b.year, tag: b.tag, hasFile: b.hasFile, timestamp: b.timestamp };
+                    if (b.fileBlob) copy.fileBase64 = await blobToBase64(b.fileBlob);
+                    backup.push(copy);
+                }
+                
+                var blob = new Blob([JSON.stringify(backup)], { type: "application/json" });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a'); a.href = url; a.download = "نسخة_احتياطية_مكتبة_الفنون.json"; a.click();
+                showToast('تم تحميل ملف النسخة الاحتياطية بنجاح ✓');
+            };
+        }
+
+        function importBackup(input) {
+            var file = input.files[0]; if (!file) return;
+            if (!confirm('سيتم دمج المراجع المستوردة مع سجلاتك المحلية الحالية. هل تود المتابعة؟')) { input.value = ''; return; }
+            
+            showToast('جاري قراءة البيانات المرفوعة...');
+            var reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    var data = JSON.parse(e.target.result);
+                    showToast('جاري تفكيك المستندات الرقمية... يرجى الانتظار');
+                    
+                    for (var b of data) {
+                        if (b.fileBase64) { b.fileBlob = await base64ToBlob(b.fileBase64); delete b.fileBase64; }
+                    }
+                    
+                    var tx = db.transaction("booksStore", "readwrite");
+                    var store = tx.objectStore("booksStore");
+                    data.forEach(item => store.put(item));
+                    
+                    tx.oncomplete = function() { loadBooks(); showToast('تمت استعادة كافة المراجع والملفات ودمجها بنجاح ✓'); input.value = ''; };
+                } catch(err) { alert('الملف المختار غير متوافق أو تالف.'); input.value = ''; }
+            };
+            reader.readAsText(file);
+        }
+
+        function blobToBase64(blob) {
+            return new Promise((res) => { var r = new FileReader(); r.onloadend = () => res(r.result); r.readAsDataURL(blob); });
+        }
+        async function base64ToBlob(b64) { var r = await fetch(b64); return await r.blob(); }
+
+        initDB();
+    </script>
 </body>
 </html>
